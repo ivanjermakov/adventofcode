@@ -46,4 +46,5 @@ included ls subLs = commonCount == length subLs
     commonCount = foldr (\e acc -> acc + if e `elem` ls then 1 else 0) 0 subLs
 
 -- What elements of sub list are not contained in the list
-nonCommon ls subLs = foldr (\e acc -> if e `elem` ls then acc else acc ++ [e]) [] subLs
+nonCommon :: (Eq a) => [a] -> [a] -> [a]
+nonCommon ls = foldr (\e acc -> if e `elem` ls then acc else acc ++ [e]) []
