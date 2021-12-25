@@ -1,6 +1,6 @@
 .stack-work/
 stack.yaml.lock
-adventofcode.cabal
+aadventofcode.cabal
 adventofcode.iml
 *~
 .idea

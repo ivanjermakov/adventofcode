@@ -1,10 +1,10 @@
 module Main where
 
-import Day3
+import Day4
 
 main :: IO ()
 main = do
-  content <- readFile "resources/d3.txt"
-  let matrix = map (map (\e -> read [e] :: Int)) (lines content)
-  let res = findOgRating matrix
-  print res
+  content <- readFile "resources/d4.txt"
+  let (ns, bs) = parse content
+  print $ findWinner ns bs
+  print $ findWinnerScore ns bs
