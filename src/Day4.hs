@@ -14,25 +14,24 @@ parse content = case splitOn "\n\n" content of
   _ -> undefined
 
 findWinnerScore :: [Int] -> [Board] -> Int
-findWinnerScore ns bs = case findWinner ns bs of
+findWinnerScore ns bs = case findLastWinner ns bs of
   Just (ns', b) -> last ns' * sum (nonCommon ns' $ concat b)
   Nothing -> undefined
 
 -- ([Int], Board) is a tuple of set of drawn number until win and the win board
-findWinner :: [Int] -> [Board] -> Maybe ([Int], Board)
-findWinner = findWinner' 0
+findLastWinner :: [Int] -> [Board] -> Maybe ([Int], Board)
+findLastWinner = findLastWinner' (0, []) 0
 
 -- First argument is an index
-findWinner' :: Int -> [Int] -> [Board] -> Maybe ([Int], Board)
-findWinner' i ns bs
-  | i > length ns = Nothing
+findLastWinner' :: (Int, Board) -> Int -> [Int] -> [Board] -> Maybe ([Int], Board)
+findLastWinner' (li, lb) i ns bs
+  | i > length ns = Just (take li ns, lb)
   | otherwise =
     let drawn = take i ns
         winners = filter (isWinner drawn) bs
      in case winners of
-          [winner] -> Just (drawn, winner)
-          [] -> findWinner' (i + 1) ns bs
-          _ -> undefined
+          winner : _ -> findLastWinner' (i, winner) (i + 1) ns (nonCommon winners bs)
+          _ -> findLastWinner' (li, lb) (i + 1) ns bs
 
 isWinner :: [Int] -> Board -> Bool
 isWinner ns b = any (any (included ns)) [b, transpose b]
