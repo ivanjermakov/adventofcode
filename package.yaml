@@ -35,6 +35,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - adventofcode
+    - text
 
 tests:
   adventofcode-test:
