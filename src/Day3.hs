@@ -3,14 +3,26 @@ module Day3 where
 import Data.Function
 import Data.List
 
-calculatePower :: [[Int]] -> Int
-calculatePower matrix = foldr (*) 1 (map (binToDec . concatAny) [gammaL, epsilonL])
-  where
-    gammaL = map findMostCommon (transpose matrix)
-    epsilonL = map (\d -> if d == 0 then 1 else 0) gammaL
+findOgRating :: [[Int]] -> Int
+findOgRating matrix =
+  let og = findOgRating' 0 findMostCommon matrix
+      co = findOgRating' 0 findLeastCommon matrix
+   in og * co
+
+findOgRating' :: Int -> ([Int] -> Int) -> [[Int]] -> Int
+findOgRating' bit extractor matrix =
+  let mostCommon = extractor (transpose matrix !! bit)
+      bitEq b n ds = ds !! b == n
+      found = filter (bitEq bit mostCommon) matrix
+   in case found of
+        [a] -> binToDec $ concatAny a
+        l -> findOgRating' (bit + 1) extractor l
 
 findMostCommon :: (Ord a) => [a] -> a
 findMostCommon = head . maximumBy (compare `on` length) . group . sort
+
+findLeastCommon :: (Ord a) => [a] -> a
+findLeastCommon = head . minimumBy (compare `on` length) . group . sort
 
 binToDec :: Integral i => i -> i
 binToDec 0 = 0
