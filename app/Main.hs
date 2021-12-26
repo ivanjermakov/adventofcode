@@ -1,10 +1,10 @@
 module Main where
 
-import Day4
+import Day5
 
 main :: IO ()
 main = do
-  content <- readFile "resources/d4.txt"
-  let (ns, bs) = parse content
-  print $ findLastWinner ns bs
-  print $ findWinnerScore ns bs
+  content <- readFile "resources/d5.txt"
+  let lines' = parse content
+--print lines'
+  print $ getCount lines'
