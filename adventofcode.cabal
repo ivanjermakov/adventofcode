@@ -33,6 +33,9 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , containers
+    , split
+    , text
   default-language: Haskell2010
 
 executable adventofcode-exe
@@ -45,6 +48,8 @@ executable adventofcode-exe
   build-depends:
       adventofcode
     , base >=4.7 && <5
+    , containers
+    , split
     , text
   default-language: Haskell2010
 
@@ -59,4 +64,7 @@ test-suite adventofcode-test
   build-depends:
       adventofcode
     , base >=4.7 && <5
+    , containers
+    , split
+    , text
   default-language: Haskell2010
