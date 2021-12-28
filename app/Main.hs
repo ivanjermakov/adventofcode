@@ -1,9 +1,9 @@
 module Main where
 
-import Day6
+import Day7
 
 main :: IO ()
 main = do
-  content <- readFile "resources/d6.txt"
+  content <- readFile "resources/d7.txt"
   let ns = parse content
-  print $ sum $ simulate 256 ns
+  print $ getDistance ns
