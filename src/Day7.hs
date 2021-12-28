@@ -14,4 +14,4 @@ calculateTotalFuel :: Int -> [Int] -> Int
 calculateTotalFuel n = sum . map (calculateFuel n)
 
 calculateFuel :: Int -> Int -> Int
-calculateFuel a b = abs $ a - b
+calculateFuel a b = sum [0 .. abs $ a - b]
