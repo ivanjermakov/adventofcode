@@ -1,9 +1,9 @@
 module Main where
 
-import Day5
+import Day6
 
 main :: IO ()
 main = do
-  content <- readFile "resources/d5.txt"
-  let lines' = parse content
-  print $ getCount lines'
+  content <- readFile "resources/d6.txt"
+  let ns = parse content
+  print $ sum $ simulate 256 ns

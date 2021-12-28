@@ -24,6 +24,7 @@ dependencies:
   - text
   - split
   - containers
+  - parallel
 
 library:
   source-dirs: src
