@@ -1,9 +1,9 @@
 module Main where
 
-import Day7
+import Day8
 
 main :: IO ()
 main = do
-  content <- readFile "resources/d7.txt"
-  let ns = parse content
-  print $ getDistance ns
+  content <- readFile "resources/d8.txt"
+  let rs = parse content
+  print $ sum . map (foldl1 (\a b -> 10 * a + b) . solve) $ rs
