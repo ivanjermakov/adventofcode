@@ -1,12 +1,13 @@
 module Day10 where
 
-import Data.Maybe (mapMaybe)
+import Data.List (sort)
+import Data.Maybe (isNothing)
 
 main10 :: IO ()
 main10 = do
   content <- readFile "resources/d10.txt"
   let ls = lines content
-  let res = sum . map score . mapMaybe (fst . parse) $ ls
+  let res = (\l -> l !! (length l `div` 2)) . reverse . sort . map completionScore . filter (not . null) . map (map toClosing . snd) . filter (isNothing . fst) . map parse $ ls
   print res
 
 -- Parse line and return first illegal char and stack at that moment
@@ -31,6 +32,14 @@ updateStack (c, s) =
 isOpening :: Char -> Bool
 isOpening = flip elem "([{<"
 
+toClosing :: Char -> Char
+toClosing c = case c of
+  '(' -> ')'
+  '[' -> ']'
+  '{' -> '}'
+  '<' -> '>'
+  _ -> undefined
+
 -- First arg (opening) match second one (closing)
 isMatching :: Char -> Char -> Bool
 isMatching o c = case o of
@@ -40,16 +49,21 @@ isMatching o c = case o of
   '<' -> c == '>'
   _ -> False
 
+completionScore :: [Char] -> Int
+completionScore = foldl f 0
+  where
+    f v e = (v * 5) + score e
+
 score :: Char -> Int
 score c = case c of
-  '(' -> 3
-  ')' -> 3
-  '[' -> 57
-  ']' -> 57
-  '{' -> 1197
-  '}' -> 1197
-  '<' -> 25137
-  '>' -> 25137
+  '(' -> 1
+  ')' -> 1
+  '[' -> 2
+  ']' -> 2
+  '{' -> 3
+  '}' -> 3
+  '<' -> 4
+  '>' -> 4
   _ -> 0
 
 safeHead :: [a] -> Maybe a
