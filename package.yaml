@@ -25,6 +25,7 @@ dependencies:
   - split
   - containers
   - parallel
+  - matrix
 
 library:
   source-dirs: src
