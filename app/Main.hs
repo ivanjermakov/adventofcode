@@ -1,9 +1,10 @@
 module Main where
 
-import Day8
+import Day9
 
 main :: IO ()
 main = do
-  content <- readFile "resources/d8.txt"
-  let rs = parse content
-  print $ sum . map (foldl1 (\a b -> 10 * a + b) . solve) $ rs
+  content <- readFile "resources/d9.txt"
+  let m = parse content
+  let lps = getLowest m
+  print $ sum . map (1 +) $ lps
