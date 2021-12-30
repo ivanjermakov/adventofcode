@@ -26,6 +26,7 @@ dependencies:
   - containers
   - parallel
   - matrix
+  - Stack
 
 library:
   source-dirs: src
