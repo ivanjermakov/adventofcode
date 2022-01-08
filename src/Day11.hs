@@ -3,7 +3,8 @@ module Day11 where
 import Control.Arrow ((***))
 import Control.Monad (join)
 import Data.Bifunctor (bimap)
-import Data.Matrix (Matrix, fromLists, mapPos, prettyMatrix, setElem, toList, (!))
+import Data.List (nub)
+import Data.Matrix (Matrix, fromLists, mapPos, setElem, toList, (!))
 
 data Octopus = Octopus {energy :: Int, flashed :: Bool, flashCount :: Int, position :: Position}
 
@@ -16,17 +17,16 @@ main11 :: IO ()
 main11 = do
   content <- readFile "resources/d11.txt"
   let grid = parse content
-  let resultGrid = nSteps 100 grid
-  putStrLn . prettyMatrix $ resultGrid
-  let totalFlashes = sum . map flashCount . toList $ resultGrid
-  print totalFlashes
-  where
-    levels m = fmap energy m
+  let syncStep = flashUntilSync 0 grid
+  print syncStep
 
-nSteps :: Int -> Matrix Octopus -> Matrix Octopus
-nSteps n m = case n of
-  0 -> m
-  _ -> nSteps (n - 1) (step m)
+flashUntilSync :: Int -> Matrix Octopus -> Int
+flashUntilSync n m = if isSync then n else next
+  where
+    next = flashUntilSync (n + 1) (step m)
+    isSync = case nub . map energy . toList $ m of
+      [a] -> a == 0
+      _ -> False
 
 step :: Matrix Octopus -> Matrix Octopus
 step = mResetFlashAll . step' . fmap incEnergy
