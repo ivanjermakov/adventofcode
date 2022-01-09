@@ -1,7 +1,7 @@
 module Day12 where
 
 import Data.Char (isLower)
-import Data.List (intercalate)
+import Data.List (intercalate, nub)
 import Data.List.Split (splitOn)
 import qualified Data.Map as M (Map, empty, fromList, insertWith, lookup, toList, (!))
 import Data.Ord (comparing)
@@ -47,12 +47,12 @@ maybeToList Nothing = []
 -- solution
 data CaveGraph = CaveGraph {graph :: Graph String, caveMap :: M.Map String Cave}
 
-type Route = [Cave]
+type Route = [String]
 
 data CaveType = Start | End | Big | Small
   deriving (Show, Eq, Ord)
 
-data Cave = Cave {name :: String, caveType :: CaveType, visited :: Bool}
+data Cave = Cave {name :: String, caveType :: CaveType, visited :: Int}
   deriving (Show)
 
 instance Eq Cave where
@@ -62,18 +62,22 @@ instance Ord Cave where
   compare = comparing name
 
 fromName :: String -> Cave
-fromName s = Cave s (parseCaveType s) False
+fromName s = Cave s (parseCaveType s) 0
 
 parseCaveType :: String -> CaveType
 parseCaveType "start" = Start
 parseCaveType "end" = End
 parseCaveType s = if isLower . head $s then Small else Big
 
-canVisit :: Cave -> Bool
-canVisit c = not (visited c) || caveType c == Big
+canVisit :: Cave -> String -> Bool
+canVisit c special = case caveType c of
+  Start -> False
+  End -> True
+  Big -> True
+  Small -> if name c == special then visited c < 2 else visited c == 0
 
 visit :: Cave -> CaveGraph -> CaveGraph
-visit c (CaveGraph g m) = CaveGraph g $ M.insertWith (\c' _ -> c' {visited = True}) (name c) c m
+visit c (CaveGraph g m) = CaveGraph g $ M.insertWith (\c' _ -> c' {visited = visited c' + 1}) (name c) c m
 
 main12 :: IO ()
 main12 = do
@@ -92,13 +96,19 @@ parse = map (listToEdge . splitOn "-") . lines
     listToEdge _ = undefined
 
 routes :: CaveGraph -> [Route]
-routes = routes' start [start] []
+routes cg = nub . concatMap (routes' start [name start] [] cg) $ smallCaves
   where
+    smallCaves =
+      filter (\n -> caveType (fromName n) == Small)
+        . map fst
+        . M.toList
+        . caveMap
+        $ cg
     start = fromName "start"
 
-routes' :: Cave -> Route -> [Route] -> CaveGraph -> [Route]
-routes' c r rs cg = case c of
+routes' :: Cave -> Route -> [Route] -> CaveGraph -> String -> [Route]
+routes' c r rs cg special = case c of
   (Cave _ End _) -> rs ++ [r]
-  _ -> concatMap (\c' -> routes' c' (r ++ [c]) rs (visit c cg)) nextCaves
+  _ -> concatMap (\c' -> routes' c' (r ++ [name c]) rs (visit c cg) special) nextCaves
   where
-    nextCaves = filter canVisit . map (caveMap cg M.!) . (\e -> adjacent e (graph cg)) . name $ c
+    nextCaves = filter (`canVisit` special) . map (caveMap cg M.!) . (\e -> adjacent e (graph cg)) . name $ c
