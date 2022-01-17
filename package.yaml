@@ -27,6 +27,7 @@ dependencies:
   - parallel
   - matrix
   - Stack
+  - pqueue
 
 library:
   source-dirs: src
