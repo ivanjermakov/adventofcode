@@ -12,13 +12,22 @@ type BitSequence = String
 
 type Version = Int
 
-type TypeId = Int
+data PacketType
+  = Sum -- 0
+  | Product -- 1
+  | Minimum -- 2
+  | Maximum -- 3
+  | Literal -- 4
+  | GreaterThan -- 5
+  | LessThan -- 6
+  | EqualTo -- 7
+  deriving (Enum, Eq, Show, Read)
 
 type LengthTypeId = Int
 
 type PacketLength = Int
 
-data Header = Header {version :: Version, typeId :: TypeId}
+data Header = Header {version :: Version, packetType :: PacketType}
   deriving (Show, Read)
 
 data Packet
@@ -33,13 +42,23 @@ header (OperatorPacket h _) = h
 main16 :: IO ()
 main16 = do
   inputHex <- readFile "resources/d16.txt"
-  let (p, s) = parse . hexStrToBin $ inputHex
+  let p = fst . parse . hexStrToBin $ inputHex
   putStrLn $ pretty p
-  print . sum . map (version . header) . flattenPacket $ p
+  print . eval $ p
 
-flattenPacket :: Packet -> [Packet]
-flattenPacket (OperatorPacket h sps) = OperatorPacket h sps : concatMap flattenPacket sps
-flattenPacket literalPacket = [literalPacket]
+eval :: Packet -> Int
+eval p = case (packetType . header $ p, p) of
+  (Sum, OperatorPacket _ ps) -> sum . evalPs $ ps
+  (Literal, LiteralPacket _ v) -> v
+  (Product, OperatorPacket _ ps) -> product . evalPs $ ps
+  (Minimum, OperatorPacket _ ps) -> minimum . evalPs $ ps
+  (Maximum, OperatorPacket _ ps) -> maximum . evalPs $ ps
+  (GreaterThan, OperatorPacket _ ps) -> comparePs (>) ps
+  (LessThan, OperatorPacket _ ps) -> comparePs (<) ps
+  (EqualTo, OperatorPacket _ ps) -> comparePs (==) ps
+  where
+    evalPs = map eval
+    comparePs f = (\(a : b : _) -> fromEnum $ f a b) . evalPs
 
 pretty :: Packet -> String
 pretty = pretty' 0
@@ -56,7 +75,7 @@ pretty = pretty' 0
 
 parse :: BitSequence -> (Packet, BitSequence)
 parse s =
-  if typeId h == 4
+  if packetType h == Literal
     then useParser parseLiteralPacket
     else useParser parseOperatorPacket
   where
@@ -73,6 +92,14 @@ parseMany stopPredicate bitS = parseMany' ([], bitS)
         else parseMany' (ps ++ [p], left)
       where
         (p, left) = parse s
+
+parseHeader :: BitSequence -> (Header, BitSequence)
+parseHeader s = (Header parseVersion parseTypeId, s')
+  where
+    (hs, s') = splitAt 6 s
+    (vs, ts) = splitAt 3 hs
+    parseVersion = fromBin vs
+    parseTypeId = toEnum . fromBin $ ts
 
 parseLiteralPacket :: Header -> BitSequence -> (Packet, BitSequence)
 parseLiteralPacket h s = (LiteralPacket h n, s')
@@ -113,14 +140,6 @@ parsePacketLengthType (controlBit : s) = (c, fromBin lenBits, s')
   where
     c = if controlBit == '0' then 15 else 11
     (lenBits, s') = splitAt c s
-
-parseHeader :: BitSequence -> (Header, BitSequence)
-parseHeader s = (Header parseVersion parseTypeId, s')
-  where
-    (hs, s') = splitAt 6 s
-    (vs, ts) = splitAt 3 hs
-    parseVersion = fromBin vs
-    parseTypeId = fromBin ts
 
 hexStrToBin :: HexString -> BitSequence
 hexStrToBin = concat . mapMaybe hexToBin
