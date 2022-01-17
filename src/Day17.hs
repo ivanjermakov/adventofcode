@@ -14,7 +14,7 @@ type Area = (Range, Range)
 -- ___aaa....
 -- .S......B.
 data Result = In | Short | Far | Both | Through | Tbd
-  deriving (Show)
+  deriving (Eq, Show)
 
 targetArea :: Area
 --test
@@ -23,15 +23,24 @@ targetArea = ((241, 275), (-75, -49))
 
 main17 :: IO ()
 main17 = do
-  print targetArea
-  print $ findHighest (maxPossibleX (snd $ fst targetArea), 100) targetArea
+  let vs = findVelocities ((0, 1000), (-200, 400)) targetArea
+  print $ bounds vs
+  print $ length vs
 
-findHighest :: Velocity -> Area -> (Velocity, Int)
-findHighest (vx, vy) a = case simulate (vx, vy) a of
-  (ps, In) -> ((vx, vy), maximum . map snd $ps)
-  (_, Through) -> findHighest (vx, vy - 1) a
-  (_, Short) -> findHighest (vx + 1, vy) a
-  (_, Far) -> findHighest (vx - 1, vy) a
+bounds :: [Range] -> Area
+bounds =
+  foldl
+    ( \((minX, maxX), (minY, maxY)) (x, y) ->
+        ((min minX x, max maxX x), (min minY y, max maxY y))
+    )
+    ((maxBound, minBound), (maxBound, minBound))
+
+findVelocities :: Area -> Area -> [Velocity]
+findVelocities ((xMinV, xMaxV), (yMinV, yMaxV)) a =
+  map fst
+    . filter ((== In) . snd . snd)
+    . map (\v -> (v, simulate v a))
+    $ [(x, y) | x <- [xMinV .. xMaxV], y <- [yMinV .. yMaxV]]
 
 simulate :: Velocity -> Area -> ([Pos], Result)
 simulate v = simulate' (startPos, v, [startPos])
