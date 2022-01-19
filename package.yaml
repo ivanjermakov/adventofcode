@@ -28,6 +28,7 @@ dependencies:
   - matrix
   - Stack
   - pqueue
+  - rosezipper
 
 library:
   source-dirs: src
