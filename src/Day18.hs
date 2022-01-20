@@ -1,6 +1,6 @@
 module Day18 where
 
-import Data.Char (digitToInt, isNumber)
+import Data.Char (isNumber)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes, fromJust, listToMaybe, mapMaybe)
 import Data.Tree
@@ -12,6 +12,8 @@ type NTreePos = Z.TreePos Z.Full (Maybe Int)
 
 data Side = LeftSide | RightSide | TopSide
   deriving (Eq, Show)
+
+type Path = [Side]
 
 main18 :: IO ()
 main18 = do
@@ -111,34 +113,23 @@ nearestRight = find Nothing
         RightSide -> Nothing
       -- first, leaf
       (Nothing, True, _) -> up n
+      (Nothing, False, _) -> error $ "nearest find called from non-leaf node: " ++ (toPairRepr . Z.tree $ n)
       where
         up n' = find (Just $ side n') (parentUnsafe n')
         lt n' = find (Just TopSide) (leftUnsafe n')
         rt n' = find (Just TopSide) (rightUnsafe n')
 
-{-
-findExplodeNode :: Node -> Maybe Node
-findExplodeNode (Node (l, r) _) = head . filter isJust . map findExplodeNode $ [l, r]
-findExplodeNode (Leaf _ Nothing) = Nothing
-findExplodeNode (Leaf _ (Just p)) = if isExplode p then Just p else Nothing
-  where
-    isExplode n = ((> 3) . depth $ n) && pairNode n
-
-explode :: Node -> (Node, Bool)
-explode n = case mEn of
-  Nothing -> (n, True)
-  Just en -> (nr, False)
-    where
-      (Node (Leaf lv _, Leaf rv _) _) = en
-      n' = maybe n (updateNode (Leaf 0)) (Just en)
-      nl = maybe n' (updateLeaf (+ lv)) (nearestLeft n')
-      nr = maybe nl (updateLeaf (+ rv)) (nearestRight nl)
-  where
-    mEn = findExplodeNode n
--}
-
 explode :: NTreePos -> (Bool, NTreePos)
-explode n = undefined
+explode n = case findExplode n of
+  Nothing -> (False, n)
+  (Just en) -> (True, appendRight . appendLeft . doExplode $ en)
+    where
+      enLoc = locate en
+      ll = labelUnsafe . leftUnsafe $ en
+      rl = labelUnsafe . rightUnsafe $ en
+      doExplode = Z.root . Z.setTree (parse "0")
+      appendLeft n' = maybe n' (Z.root . Z.modifyLabel (fmap (+ ll))) (nearestLeft . findNode enLoc $ n')
+      appendRight n' = maybe n' (Z.root . Z.modifyLabel (fmap (+ rl))) (nearestRight . findNode enLoc $ n')
 
 findExplode :: NTreePos -> Maybe NTreePos
 findExplode n = case Z.isLeaf n of
@@ -165,12 +156,28 @@ leftUnsafe = fromJust . Z.firstChild
 rightUnsafe :: NTreePos -> NTreePos
 rightUnsafe = fromJust . Z.lastChild
 
+labelUnsafe :: NTreePos -> Int
+labelUnsafe = fromJust . Z.label
+
 side :: NTreePos -> Side
 side n
   | Z.isRoot n = TopSide
   | Z.isFirst n = LeftSide
   | Z.isLast n = RightSide
   | otherwise = error "side is unknown"
+
+locate :: NTreePos -> Path
+locate = locate' []
+  where
+    locate' p n = case side n of
+      TopSide -> p
+      s -> locate' (s : p) (parentUnsafe n)
+
+findNode :: Path -> NTreePos -> NTreePos
+findNode (s : ss) n = case s of
+  LeftSide -> findNode ss (leftUnsafe n)
+  RightSide -> findNode ss (rightUnsafe n)
+findNode [] n = n
 
 transform :: (NTreePos -> NTreePos) -> NTree -> NTree
 transform f = Z.tree . f . Z.fromTree
