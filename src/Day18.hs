@@ -3,7 +3,6 @@
 module Day18 where
 
 import Control.Monad (mfilter)
-import Data.Bifunctor (first)
 import Data.Char (isNumber)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes, fromJust, isJust, listToMaybe, mapMaybe)
@@ -23,7 +22,9 @@ main18 :: IO ()
 main18 = do
   input <- readFile "resources/d18-test.txt"
   let ps = parseInput input
-  print $ map show ps
+  let t = reduceSum $ ps
+  print . toPairRepr $ t
+  print $ magnitude t
 
 node :: (NTree, NTree) -> NTree
 node (a, b) = Node Nothing [a, b]
@@ -31,11 +32,11 @@ node (a, b) = Node Nothing [a, b]
 leaf :: Int -> NTree
 leaf v = Node (Just v) []
 
-add :: Tree Int -> Tree Int -> Tree Int
-add a b = Node 0 [a, b]
+add :: NTree -> NTree -> NTree
+add a b = Node Nothing [a, b]
 
-sumTrees :: [Tree Int] -> Tree Int
-sumTrees (f: ts) = foldl add f ts
+sumTrees :: [NTree] -> NTree
+sumTrees (f : ts) = foldl add f ts
 sumTrees [] = error "no trees provided"
 
 parseInput :: String -> [NTree]
@@ -50,6 +51,12 @@ parse = unfoldTree f
       | otherwise = (Nothing, [l, r])
       where
         (l, r) = splitPair s
+
+magnitude :: NTree -> Int
+magnitude = foldTree f
+  where
+    f (Just a) _ = a
+    f Nothing (l : r : _) = 3 * l + 2 * r
 
 splitPair :: String -> (String, String)
 splitPair s = (l, r)
@@ -73,6 +80,9 @@ toPairRepr = foldTree f
 
 pretty :: NTree -> String
 pretty = drawTree . fmap show
+
+reduceSum :: [NTree] -> NTree
+reduceSum = Z.tree . reduceFull . Z.fromTree . sumTrees
 
 reduceFull :: NTreePos -> NTreePos
 reduceFull n = case reduce n of
