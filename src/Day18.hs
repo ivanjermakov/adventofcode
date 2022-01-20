@@ -1,8 +1,12 @@
+{-# LANGUAGE BlockArguments #-}
+
 module Day18 where
 
+import Control.Monad (mfilter)
+import Data.Bifunctor (first)
 import Data.Char (isNumber)
 import Data.List (intercalate)
-import Data.Maybe (catMaybes, fromJust, listToMaybe, mapMaybe)
+import Data.Maybe (catMaybes, fromJust, isJust, listToMaybe, mapMaybe)
 import Data.Tree
 import qualified Data.Tree.Zipper as Z
 
@@ -29,6 +33,10 @@ leaf v = Node (Just v) []
 
 add :: Tree Int -> Tree Int -> Tree Int
 add a b = Node 0 [a, b]
+
+sumTrees :: [Tree Int] -> Tree Int
+sumTrees (f: ts) = foldl add f ts
+sumTrees [] = error "no trees provided"
 
 parseInput :: String -> [NTree]
 parseInput = map parse . lines
@@ -65,6 +73,17 @@ toPairRepr = foldTree f
 
 pretty :: NTree -> String
 pretty = drawTree . fmap show
+
+reduceFull :: NTreePos -> NTreePos
+reduceFull n = case reduce n of
+  (True, r) -> reduceFull r
+  (False, r) -> r
+
+reduce :: NTreePos -> (Bool, NTreePos)
+reduce n = (er || sr, sn)
+  where
+    (er, en) = explode n
+    (sr, sn) = split en
 
 nearestLeft :: NTreePos -> Maybe NTreePos
 nearestLeft = find Nothing
@@ -113,7 +132,6 @@ nearestRight = find Nothing
         RightSide -> Nothing
       -- first, leaf
       (Nothing, True, _) -> up n
-      (Nothing, False, _) -> error $ "nearest find called from non-leaf node: " ++ (toPairRepr . Z.tree $ n)
       where
         up n' = find (Just $ side n') (parentUnsafe n')
         lt n' = find (Just TopSide) (leftUnsafe n')
@@ -127,17 +145,42 @@ explode n = case findExplode n of
       enLoc = locate en
       ll = labelUnsafe . leftUnsafe $ en
       rl = labelUnsafe . rightUnsafe $ en
-      doExplode = Z.root . Z.setTree (parse "0")
-      appendLeft n' = maybe n' (Z.root . Z.modifyLabel (fmap (+ ll))) (nearestLeft . findNode enLoc $ n')
-      appendRight n' = maybe n' (Z.root . Z.modifyLabel (fmap (+ rl))) (nearestRight . findNode enLoc $ n')
+      doExplode = Z.root . Z.setTree (leaf 0)
+      appendLeft = incNode nearestLeft ll
+      appendRight = incNode nearestRight rl
+      incNode f v n' = maybe n' (Z.root . Z.modifyLabel (fmap (+ v))) (f . findNode enLoc $ n')
 
 findExplode :: NTreePos -> Maybe NTreePos
-findExplode n = case Z.isLeaf n of
-  False -> listToMaybe . mapMaybe findExplode . catMaybes $ [Z.firstChild n, Z.lastChild n]
-  True -> if isExplode p then Just p else Nothing
+findExplode = findNodeBy isExplode
+  where
+    isExplode n = ((> 3) . depth $ n) && pairNode n
+
+split :: NTreePos -> (Bool, NTreePos)
+split n = case findSplit n of
+  Nothing -> (False, n)
+  (Just sn) -> (True, sn')
     where
-      p = parentUnsafe n
-      isExplode n' = ((> 3) . depth $ n') && pairNode n'
+      snl = labelUnsafe sn
+      sn' = Z.root . Z.setTree (node (leaf l, leaf r)) $ sn
+      (l, r) = div2Rounds snl
+      div2Rounds :: Int -> (Int, Int)
+      div2Rounds a
+        | even a = (d, d)
+        | otherwise = (d, d + 1)
+        where
+          d = a `div` 2
+
+findSplit :: NTreePos -> Maybe NTreePos
+findSplit = findNodeBy isSplit
+  where
+    isSplit :: NTreePos -> Bool
+    isSplit n = Z.isLeaf n && (isJust . mfilter (> 9) $ Z.label n)
+
+findNodeBy :: (NTreePos -> Bool) -> NTreePos -> Maybe NTreePos
+findNodeBy pr n = case (pr n, Z.isLeaf n) of
+  (True, _) -> Just n
+  (False, True) -> Nothing
+  (False, False) -> listToMaybe . mapMaybe (findNodeBy pr) . catMaybes $ [Z.firstChild n, Z.lastChild n]
 
 pairNode :: NTreePos -> Bool
 pairNode n = maybe False Z.isLeaf (Z.firstChild n) && maybe False Z.isLeaf (Z.lastChild n)
