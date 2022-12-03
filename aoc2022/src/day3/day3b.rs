@@ -1,5 +1,3 @@
-use std::fs::read_to_string;
-
 pub fn solve(input: String) -> i32 {
     let lines: Vec<&str> = input.trim().split("\n").collect();
     let groups: Vec<Vec<&str>> = lines.chunks(3).map(|s| s.to_vec()).collect();
@@ -25,14 +23,6 @@ mod tests {
     use crate::day3::day3a::read_input;
 
     use super::*;
-
-    #[test]
-    fn should_convert_to_priority() {
-        assert_eq!(to_priority('a'), 1);
-        assert_eq!(to_priority('z'), 26);
-        assert_eq!(to_priority('A'), 27);
-        assert_eq!(to_priority('Z'), 52);
-    }
 
     #[test]
     fn should_find_repeated_item() {
