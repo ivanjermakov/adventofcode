@@ -11,13 +11,12 @@ pub fn solve(input: String) -> i32 {
 }
 
 pub fn parse_elfs(input: String) -> Vec<Vec<i32>> {
-    input.trim().split("\n\n").map(|elf| {
-        elf.split("\n").map(|s| {
-            s.parse::<i32>().unwrap()
-        }).collect()
-    }).collect()
+    input
+        .trim()
+        .split("\n\n")
+        .map(|elf| elf.split("\n").map(|s| s.parse::<i32>().unwrap()).collect())
+        .collect()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -31,7 +30,7 @@ mod tests {
     }
 
     #[test]
-    fn test1() {
+    fn should_solve() {
         let input = read_input();
         let result = solve(input);
         assert_eq!(result, 68775);
