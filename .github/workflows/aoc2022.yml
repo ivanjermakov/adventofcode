@@ -16,4 +16,5 @@ jobs:
         run: sudo apt install cargo
 
       - name: Test
+        working-directory: ./aoc2022
         run: cargo test --verbose
