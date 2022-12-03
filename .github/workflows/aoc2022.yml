@@ -7,6 +7,10 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+defaults:
+  run:
+    working-directory: ./aoc2022
+
 jobs:
   build:
 
@@ -14,9 +18,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: cd
-        run: cd aoc2022
 
       - uses: actions-rs/toolchain@v1
         with:
