@@ -4,9 +4,6 @@ on:
   - push
   - pull_request
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   build:
 
@@ -14,20 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          working-directory: ./aoc2022
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --all-features
-
-      - name: Build
-        run: cargo build --verbose
+      - name: Install Cargo
+        run: sudo apt install cargo
 
       - name: Test
         run: cargo test --verbose
