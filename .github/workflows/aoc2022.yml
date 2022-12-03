@@ -25,6 +25,7 @@ jobs:
 
       - uses: actions-rs/cargo@v1
         with:
+          cwd: ./aoc2022
           command: build
           args: --release --all-features
 
