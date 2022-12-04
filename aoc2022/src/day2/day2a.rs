@@ -27,24 +27,21 @@ pub fn parse_rounds(input: String) -> Vec<Round> {
         .trim()
         .split("\n")
         .map(|round| {
-            let shapes: Vec<Shape> = round
-                .split(" ")
-                .map(|shape| parse_shape(shape).unwrap())
-                .collect();
+            let shapes: Vec<Shape> = round.split(" ").map(|shape| parse_shape(shape)).collect();
             Round(shapes[0], shapes[1])
         })
         .collect()
 }
 
-pub fn parse_shape(shape: &str) -> Option<Shape> {
+pub fn parse_shape(shape: &str) -> Shape {
     match shape {
-        "A" => Some(Shape::Rock),
-        "X" => Some(Shape::Rock),
-        "B" => Some(Shape::Paper),
-        "Y" => Some(Shape::Paper),
-        "C" => Some(Shape::Scissors),
-        "Z" => Some(Shape::Scissors),
-        _ => None,
+        "A" => Shape::Rock,
+        "X" => Shape::Rock,
+        "B" => Shape::Paper,
+        "Y" => Shape::Paper,
+        "C" => Shape::Scissors,
+        "Z" => Shape::Scissors,
+        _ => panic!("unknown shape {}", shape),
     }
 }
 
@@ -68,15 +65,14 @@ pub fn get_round_outcome(round: Round) -> Outcome {
         return Draw;
     }
     match round {
-        Round(Shape::Rock, Shape::Paper) => Some(Outcome::Win),
-        Round(Shape::Rock, Shape::Scissors) => Some(Outcome::Lose),
-        Round(Shape::Paper, Shape::Scissors) => Some(Outcome::Win),
-        Round(Shape::Paper, Shape::Rock) => Some(Outcome::Lose),
-        Round(Shape::Scissors, Shape::Rock) => Some(Outcome::Win),
-        Round(Shape::Scissors, Shape::Paper) => Some(Outcome::Lose),
-        Round(_, _) => None,
+        Round(Shape::Rock, Shape::Paper) => Outcome::Win,
+        Round(Shape::Rock, Shape::Scissors) => Outcome::Lose,
+        Round(Shape::Paper, Shape::Scissors) => Outcome::Win,
+        Round(Shape::Paper, Shape::Rock) => Outcome::Lose,
+        Round(Shape::Scissors, Shape::Rock) => Outcome::Win,
+        Round(Shape::Scissors, Shape::Paper) => Outcome::Lose,
+        _ => unreachable!(),
     }
-    .unwrap()
 }
 
 pub fn solve(input: String) -> i32 {

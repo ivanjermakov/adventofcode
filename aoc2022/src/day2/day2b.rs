@@ -68,18 +68,18 @@ pub fn get_round_score(round: Round) -> i32 {
     outcome_score + shape_score
 }
 
-pub fn guess_player_shape(round: Round) -> Option<Shape> {
+pub fn guess_player_shape(round: Round) -> Shape {
     if round.1 == Outcome::Draw {
-        return Some(round.0);
+        return round.0;
     }
     match round {
-        Round(Shape::Rock, Outcome::Win, _) => Some(Shape::Paper),
-        Round(Shape::Paper, Outcome::Win, _) => Some(Shape::Scissors),
-        Round(Shape::Scissors, Outcome::Win, _) => Some(Shape::Rock),
-        Round(Shape::Rock, Outcome::Lose, _) => Some(Shape::Scissors),
-        Round(Shape::Paper, Outcome::Lose, _) => Some(Shape::Rock),
-        Round(Shape::Scissors, Outcome::Lose, _) => Some(Shape::Paper),
-        Round(_, _, _) => None,
+        Round(Shape::Rock, Outcome::Win, _) => Shape::Paper,
+        Round(Shape::Paper, Outcome::Win, _) => Shape::Scissors,
+        Round(Shape::Scissors, Outcome::Win, _) => Shape::Rock,
+        Round(Shape::Rock, Outcome::Lose, _) => Shape::Scissors,
+        Round(Shape::Paper, Outcome::Lose, _) => Shape::Rock,
+        Round(Shape::Scissors, Outcome::Lose, _) => Shape::Paper,
+        _ => unreachable!(),
     }
 }
 
@@ -87,7 +87,7 @@ pub fn solve(input: String) -> i32 {
     parse_rounds(input)
         .iter_mut()
         .map(|round| {
-            round.2 = guess_player_shape(*round);
+            round.2 = Some(guess_player_shape(*round));
             round
         })
         .map(|round| get_round_score(*round))
