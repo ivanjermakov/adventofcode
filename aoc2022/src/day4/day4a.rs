@@ -2,7 +2,7 @@ use std::fs::read_to_string;
 use std::ops::Range;
 
 #[derive(Debug, PartialEq)]
-pub struct Pair(Range<i32>, Range<i32>);
+pub struct Pair(pub Range<i32>, pub Range<i32>);
 
 pub fn read_input() -> String {
     read_to_string("data/day4/a.txt").unwrap()
