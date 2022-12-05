@@ -42,6 +42,10 @@ pub fn parse_moves(input: String) -> Vec<Move> {
         .collect()
 }
 
+pub fn get_top_crates(stacks: Vec<String>) -> String {
+    stacks.iter().map(|s| s.chars().last().unwrap()).collect()
+}
+
 pub fn apply_move(stacks: &mut Vec<String>, m: &Move) {
     let from_stack = &mut stacks[m.from - 1];
     let off: String = from_stack.drain(from_stack.len() - m.count..).collect();
@@ -54,10 +58,6 @@ pub fn solve(input: String) -> String {
         apply_move(&mut stacks, &m);
     }
     get_top_crates(stacks)
-}
-
-fn get_top_crates(stacks: Vec<String>) -> String {
-    stacks.iter().map(|s| s.chars().last().unwrap()).collect()
 }
 
 #[cfg(test)]
