@@ -23,6 +23,10 @@ impl Item {
     }
 }
 
+pub fn read_input_example() -> String {
+    read_to_string("data/day7/example.txt").unwrap()
+}
+
 pub fn read_input() -> String {
     read_to_string("data/day7/a.txt").unwrap()
 }
@@ -106,7 +110,7 @@ fn add_dir(root: &mut Item, path: &Vec<String>) {
     }
 }
 
-fn flatten_dirs<'a>(root: &'a Item) -> Vec<&'a Item> {
+pub fn flatten_dirs<'a>(root: &'a Item) -> Vec<&'a Item> {
     if let Directory(_, files) = root {
         let mut res = vec![root];
         for file in files {
@@ -118,7 +122,7 @@ fn flatten_dirs<'a>(root: &'a Item) -> Vec<&'a Item> {
     }
 }
 
-fn get_size(dir: &Item) -> u32 {
+pub fn get_size(dir: &Item) -> u32 {
     match dir {
         Directory(_, files) => files.iter().map(|file| get_size(file)).sum::<u32>(),
         File(_, size) => *size,
@@ -139,8 +143,7 @@ fn cd<'a>(root: &'a mut Item, path: &Vec<String>) -> &'a mut Item {
     panic!("not a directory")
 }
 
-pub fn solve(_input: String) -> u32 {
-    let input = read_input();
+pub fn solve(input: String) -> u32 {
     let commands = parse_commands(input);
     let tree = parse_tree(commands);
     flatten_dirs(&tree)
@@ -208,8 +211,8 @@ mod tests {
 
     #[test]
     fn should_parse_tree() {
-        let input = read_to_string("data/day7/example.txt");
-        let tree = parse_tree(parse_commands(input.unwrap()));
+        let input = read_input_example();
+        let tree = parse_tree(parse_commands(input));
         assert_eq!(tree, example_tree())
     }
 
