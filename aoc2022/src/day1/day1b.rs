@@ -14,7 +14,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test1() {
+    fn should_solve() {
         let input = read_input();
         let result = solve(input);
         assert_eq!(result, 202585);
