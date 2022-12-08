@@ -110,7 +110,7 @@ fn add_dir(root: &mut Item, path: &Vec<String>) {
     }
 }
 
-pub fn flatten_dirs<'a>(root: &'a Item) -> Vec<&'a Item> {
+pub fn flatten_dirs(root: &Item) -> Vec<&Item> {
     if let Directory(_, files) = root {
         let mut res = vec![root];
         for file in files {
@@ -199,11 +199,11 @@ mod tests {
                 Command::Cd("/".to_string()),
                 Command::Ls(vec![
                     Directory("bhtvbj".to_string(), vec![]),
-                    Directory("bmlllrl".to_string(), vec![])
+                    Directory("bmlllrl".to_string(), vec![]),
                 ]),
                 Command::Ls(vec![
                     File("ngmqbc.mdj".to_string(), 232616),
-                    File("vqqcvgts.vrc".to_string(), 75367)
+                    File("vqqcvgts.vrc".to_string(), 75367),
                 ]),
             ]
         );
