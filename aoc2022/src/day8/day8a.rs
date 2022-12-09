@@ -38,7 +38,6 @@ pub fn solve(input: String) -> i32 {
                 .map(|(dx, dy)| grid[dy][dx])
                 .all(|t| *tree > t);
             if north || east || south || west {
-                println!("at {:?}-{:?} ({:?})", x, y, tree);
                 count += 1;
             }
         }
@@ -61,13 +60,6 @@ pub fn parse_grid(input: String) -> Vec<Vec<i32>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn should_parse_grid() {
-        let input = read_input_example();
-        let result = parse_grid(input);
-        println!("{:?}", result)
-    }
 
     #[test]
     fn should_solve_example() {
