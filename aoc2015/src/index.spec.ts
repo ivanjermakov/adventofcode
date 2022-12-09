@@ -1,8 +1,7 @@
 import assert from 'assert'
-import {add} from './index'
 
-describe('test', () => {
-	it('should test', () => {
-		assert.equal(add(1, 2), 3)
+describe('base', () => {
+	it('should load', () => {
+		assert.equal(true, true)
 	})
 })
