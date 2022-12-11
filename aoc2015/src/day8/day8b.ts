@@ -11,6 +11,5 @@ export function solve(input: string): number {
 			}).join('') + '"'
 		})
 		.map(s => s.length).reduce((a, b) => a + b, 0)
-	console.log(displaySize, encoded)
 	return encoded - displaySize
 }
