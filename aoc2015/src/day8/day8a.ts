@@ -308,6 +308,5 @@ export function solve(input: string): number {
 		'gk',
 		'\\zrs\\syur',
 	].map(s => s.length).reduce((a, b) => a + b, 0)
-	console.log(displaySize, realSize)
 	return displaySize - realSize
 }
