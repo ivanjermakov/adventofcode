@@ -11,8 +11,8 @@ export function solve(input: string): number {
 	const combs: string[][] = permute(cities)
 	const getDist = (p1: string, p2: string): number => {
 		return dists
-			.filter(([f, t, d]) => (f === p1 && t === p2) || (f === p2 && t === p1))
-			.map(([f, t, d]) => d)[0]
+			.filter(([f, t]) => (f === p1 && t === p2) || (f === p2 && t === p1))
+			.map(([, , d]) => d)[0]
 	}
 	const opts = combs.map(comb => {
 		return comb.slice(1)
@@ -29,10 +29,10 @@ export function parse_dist(input: string): [string, string, number] {
 	return [from, to, parseInt(dist)]
 }
 
-export function permute<T>(inputArray: T[]): any {
+export function permute<T>(inputArray: T[]): T[][] {
 	const perm = (res: T[], item: any, key: any, arr: T[]): T[] => res.concat(arr.length > 1 && arr.slice(0, key)
 		.concat(arr.slice(key + 1))
 		.reduce(perm, [])
 		.map(perm => [item].concat(perm)) || item)
-	return inputArray.reduce(perm, [])
+	return inputArray.reduce(perm, []) as T[][]
 }
