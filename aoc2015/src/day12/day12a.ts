@@ -7,6 +7,5 @@ export function readInput(): string {
 export function solve(input: string): number {
 	const ms = [...input.matchAll(/([+-]?)\d+/g)]
 	const ns = ms.map(s => parseInt(s[0]))
-	console.log(ns)
 	return ns.reduce((a, b) => a + b, 0)
 }
