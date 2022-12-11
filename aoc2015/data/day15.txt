@@ -1,0 +1,4 @@
+Frosting 4 -2 0 0 5
+Candy 0 5 -1 0 8
+Butterscotch -1 0 5 0 6
+Sugar: 0 0 -2 2 1
