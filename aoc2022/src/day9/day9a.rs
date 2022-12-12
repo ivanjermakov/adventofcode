@@ -10,7 +10,7 @@ pub enum Move {
     Left,
 }
 
-#[derive(Debug, PartialEq, Ord, PartialOrd, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Ord, PartialOrd, Eq, Clone, Copy, Hash)]
 pub struct Vec2 {
     pub x: i32,
     pub y: i32,
