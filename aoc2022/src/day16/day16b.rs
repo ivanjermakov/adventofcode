@@ -53,11 +53,11 @@ fn traverse(
         (valve.flow, valve.adjs.to_vec())
     };
 
-    let can_open_my_valve = my_flow > 0 && !open_valves.contains(my_valve_name);
-    let can_open_elephant_valve = elephant_flow > 0 && !open_valves.contains(el_valve_name);
+    let me_can_open = my_flow > 0 && !open_valves.contains(my_valve_name);
+    let el_can_open = elephant_flow > 0 && !open_valves.contains(el_valve_name);
     let mut results = Vec::new();
 
-    if can_open_my_valve {
+    if me_can_open {
         let mut new_open_valves = open_valves.iter().cloned().collect::<HashSet<_>>();
         new_open_valves.insert(my_valve_name.to_string());
 
@@ -75,7 +75,7 @@ fn traverse(
         }
     }
 
-    if can_open_elephant_valve {
+    if el_can_open {
         let mut new_open_valves = open_valves.iter().cloned().collect::<HashSet<_>>();
         new_open_valves.insert(el_valve_name.to_string());
 
@@ -93,7 +93,7 @@ fn traverse(
         }
     }
 
-    if can_open_elephant_valve && can_open_my_valve && my_valve_name != el_valve_name {
+    if me_can_open && el_can_open && my_valve_name != el_valve_name {
         let mut new_open_valves = open_valves.iter().cloned().collect::<HashSet<_>>();
         new_open_valves.insert(el_valve_name.to_string());
         new_open_valves.insert(my_valve_name.to_string());
@@ -110,12 +110,12 @@ fn traverse(
         ));
     }
 
-    for new_el_valve_name in elephant_tunnels.iter() {
+    for el_adjs in elephant_tunnels.iter() {
         for new_my_valve_name in my_tunnels.iter() {
             results.push(traverse(
                 minute + 1,
                 new_my_valve_name,
-                new_el_valve_name,
+                el_adjs,
                 total_flow,
                 total_score + total_flow,
                 open_valves,
