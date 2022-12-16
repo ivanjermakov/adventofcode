@@ -1,0 +1,60 @@
+XB 0 -> YV, RP
+VN 0 -> WL, ET
+NT 0 -> CU, MQ
+ON 0 -> AA, FP
+CW 0 -> UH, WY
+KN 0 -> JL, MQ
+VT 0 -> CU, UI
+CR 0 -> OA, QQ
+YX 0 -> YJ, CI
+WL 7 -> OQ, VN, PU, VF, UA
+HV 0 -> OQ, OK
+JM 21 -> RG, OH, JE
+XF 24 -> OL, TM
+VD 0 -> MY, OK
+AA 0 -> KO, ON, UI, QE, VF
+JE 0 -> JM, NZ
+UN 0 -> UA, WY
+CC 0 -> IV, CU
+PU 0 -> JL, WL
+UA 0 -> WL, UN
+OJ 13 -> AZ, FP, MY, OL, ET
+CJ 0 -> MQ, WS
+IV 0 -> NZ, CC
+NZ 4 -> WS, IV, IU, EQ, JE
+TM 0 -> HL, XF
+SG 0 -> MQ, OH
+QQ 12 -> CR
+WX 15 -> CI, SN
+VF 0 -> WL, AA
+RP 0 -> WY, XB
+SN 0 -> WX, OI
+HL 0 -> OK, TM
+ET 0 -> OJ, VN
+UI 0 -> AA, VT
+FP 0 -> ON, OJ
+IU 0 -> NZ, QE
+JQ 0 -> HR, CU
+CU 5 -> NT, VT, JQ, CC
+WY 19 -> CW, UN, RP
+YJ 16 -> YX
+HR 0 -> JQ, JL
+RM 11 -> OI, AZ
+RG 0 -> YV, JM
+MY 0 -> VD, OJ
+QE 0 -> AA, IU
+OK 17 -> HL, UH, VD, HV
+CI 0 -> WX, YX
+OL 0 -> XF, OJ
+WS 0 -> CJ, NZ
+OH 0 -> JM, SG
+OQ 0 -> WL, HV
+OA 0 -> CR, MQ
+OI 0 -> SN, RM
+YV 25 -> RG, XB
+JL 3 -> KO, HR, PU, KN, EQ
+AZ 0 -> OJ, RM
+UH 0 -> CW, OK
+KO 0 -> AA, JL
+EQ 0 -> NZ, JL
+MQ 10 -> CJ, OA, NT, SG, KN
