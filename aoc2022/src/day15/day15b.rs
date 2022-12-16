@@ -75,6 +75,7 @@ mod tests {
         assert_eq!(result, 56000011);
     }
 
+    #[ignore]
     #[test]
     fn should_solve() {
         let input = read_input();

@@ -1,90 +1,151 @@
-use std::collections::HashSet;
+use crate::day16::day16a::{parse_graph, Valve};
+use std::collections::{HashMap, HashSet};
 
-#[derive(Debug, PartialEq, Ord, PartialOrd, Eq, Clone, Copy, Hash)]
-pub struct Vec2 {
-    pub x: i128,
-    pub y: i128,
+pub fn solve(input: String) -> i32 {
+    let g = parse_graph(input);
+
+    traverse(
+        1,
+        "AA",
+        "AA",
+        0,
+        0,
+        &HashSet::new(),
+        &g,
+        &mut HashMap::new(),
+    )
+    .unwrap()
 }
 
-pub fn solve(input: String, bounds: Vec2) -> i128 {
-    let pairs = input
-        .split("\n")
-        .map(|l| parse_pair(l.to_string()))
-        .collect::<HashSet<(Vec2, Vec2)>>();
-    let beacon_pos = find_beacon(&pairs, bounds);
-    beacon_pos.x as i128 * 4000000 + beacon_pos.y as i128
-}
+fn traverse(
+    minute: i32,
+    my_valve_name: &str,
+    el_valve_name: &str,
+    total_flow: i32,
+    total_score: i32,
+    open_valves: &HashSet<String>,
+    valve_map: &HashMap<String, Valve>,
+    cache: &mut HashMap<(i32, String, String, i32), i32>,
+) -> Option<i32> {
+    if minute > 26 {
+        return Some(total_score);
+    }
 
-pub fn parse_pair(input: String) -> (Vec2, Vec2) {
-    let ns = input
-        .split(" ")
-        .map(|tokens| tokens.parse::<i128>().unwrap())
-        .collect::<Vec<i128>>();
-    return (Vec2 { x: ns[0], y: ns[1] }, Vec2 { x: ns[2], y: ns[3] });
-}
-
-fn valid(pairs: &HashSet<(Vec2, Vec2)>, pos: Vec2) -> bool {
-    let mut valid = true;
-    for (s, b) in pairs {
-        let r = get_dist(s, b);
-        let d = get_dist(&pos, s);
-        if d <= r {
-            valid = false;
+    let cache_key = (
+        minute,
+        my_valve_name.to_string(),
+        el_valve_name.to_string(),
+        total_flow,
+    );
+    if let Some(cached_value) = cache.get(&cache_key) {
+        if *cached_value >= total_score {
+            return None;
         }
     }
-    valid
-}
+    cache.insert(cache_key, total_score);
 
-pub fn get_dist(p1: &Vec2, p2: &Vec2) -> i128 {
-    return (p1.x - p2.x).abs() + (p1.y - p2.y).abs();
-}
+    let (my_flow, my_tunnels) = {
+        let valve = valve_map.get(my_valve_name).unwrap();
+        (valve.flow, valve.adjs.to_vec())
+    };
+    let (elephant_flow, elephant_tunnels) = {
+        let valve = valve_map.get(el_valve_name).unwrap();
+        (valve.flow, valve.adjs.to_vec())
+    };
 
-fn find_beacon(pairs: &HashSet<(Vec2, Vec2)>, bounds: Vec2) -> Vec2 {
-    for (s, b) in pairs {
-        let r = get_dist(s, b);
-        for dx in 0..r + 2 {
-            let dy = (r + 1) - dx;
-            for (sign_x, sign_y) in [(-1, -1), (-1, 1), (1, -1), (1, 1)] {
-                let pos = Vec2 {
-                    x: s.x + dx * sign_x,
-                    y: s.y + dy * sign_y,
-                };
-                if !(pos.x >= 0 && pos.x <= bounds.x && pos.y >= 0 && pos.y <= bounds.y) {
-                    continue;
-                }
-                assert_eq!(get_dist(&pos, s), r + 1);
-                if valid(pairs, pos) {
-                    return pos;
-                }
-            }
+    let can_open_my_valve = my_flow > 0 && !open_valves.contains(my_valve_name);
+    let can_open_elephant_valve = elephant_flow > 0 && !open_valves.contains(el_valve_name);
+    let mut results = Vec::new();
+
+    if can_open_my_valve {
+        let mut new_open_valves = open_valves.iter().cloned().collect::<HashSet<_>>();
+        new_open_valves.insert(my_valve_name.to_string());
+
+        for new_el_valve_name in elephant_tunnels.iter() {
+            results.push(traverse(
+                minute + 1,
+                my_valve_name,
+                new_el_valve_name,
+                total_flow + my_flow,
+                total_score + total_flow,
+                &new_open_valves,
+                valve_map,
+                cache,
+            ));
         }
     }
-    panic!("not found")
+
+    if can_open_elephant_valve {
+        let mut new_open_valves = open_valves.iter().cloned().collect::<HashSet<_>>();
+        new_open_valves.insert(el_valve_name.to_string());
+
+        for new_my_valve_name in my_tunnels.iter() {
+            results.push(traverse(
+                minute + 1,
+                new_my_valve_name,
+                el_valve_name,
+                total_flow + elephant_flow,
+                total_score + total_flow,
+                &new_open_valves,
+                valve_map,
+                cache,
+            ));
+        }
+    }
+
+    if can_open_elephant_valve && can_open_my_valve && my_valve_name != el_valve_name {
+        let mut new_open_valves = open_valves.iter().cloned().collect::<HashSet<_>>();
+        new_open_valves.insert(el_valve_name.to_string());
+        new_open_valves.insert(my_valve_name.to_string());
+
+        results.push(traverse(
+            minute + 1,
+            my_valve_name,
+            el_valve_name,
+            total_flow + my_flow + elephant_flow,
+            total_score + total_flow,
+            &new_open_valves,
+            valve_map,
+            cache,
+        ));
+    }
+
+    for new_el_valve_name in elephant_tunnels.iter() {
+        for new_my_valve_name in my_tunnels.iter() {
+            results.push(traverse(
+                minute + 1,
+                new_my_valve_name,
+                new_el_valve_name,
+                total_flow,
+                total_score + total_flow,
+                open_valves,
+                valve_map,
+                cache,
+            ));
+        }
+    }
+
+    results.into_iter().flatten().max()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::day15::day15a::{read_input, read_input_example};
+    use crate::day16::day16a::{read_input, read_input_example};
 
     use super::*;
 
     #[test]
     fn should_solve_example() {
         let input = read_input_example();
-        let result = solve(input, Vec2 { x: 20, y: 20 });
-        assert_eq!(result, 56000011);
+        let result = solve(input);
+        assert_eq!(result, 1707);
     }
 
+    #[ignore]
     #[test]
     fn should_solve() {
         let input = read_input();
-        let result = solve(
-            input,
-            Vec2 {
-                x: 4000000,
-                y: 4000000,
-            },
-        );
-        assert_eq!(result, 12625383204261);
+        let result = solve(input);
+        assert_eq!(result, 2464);
     }
 }
