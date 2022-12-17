@@ -18,8 +18,8 @@ pub fn read_input() -> String {
 
 pub type Shape = Vec<Vec2>;
 
-pub fn solve(input: String) -> i32 {
-    let shapes: Vec<Shape> = vec![
+pub fn shapes() -> Vec<Shape> {
+    vec![
         vec![
             Vec2 { x: 0, y: 0 },
             Vec2 { x: 1, y: 0 },
@@ -52,7 +52,11 @@ pub fn solve(input: String) -> i32 {
             Vec2 { x: 0, y: 0 },
             Vec2 { x: 1, y: 0 },
         ],
-    ];
+    ]
+}
+
+pub fn solve(input: String) -> i32 {
+    let shapes: Vec<Shape> = shapes();
     let mut grid = HashSet::new();
     let mut off = 0;
     for p in 0..2022 {
@@ -60,7 +64,6 @@ pub fn solve(input: String) -> i32 {
         grid.extend(g);
         off = o;
     }
-    // println!("{}", format_tower(&grid));
     -highest_occupied_y(&grid) + 1
 }
 
