@@ -16,6 +16,33 @@ pub struct Vec2 {
     pub y: i32,
 }
 
+impl Vec2 {
+    pub fn add(&self, v2: &Vec2) -> Vec2 {
+        Vec2 {
+            x: self.x + v2.x,
+            y: self.y + v2.y,
+        }
+    }
+
+    pub fn subtract(&self, v2: &Vec2) -> Vec2 {
+        Vec2 {
+            x: self.x - v2.x,
+            y: self.y - v2.y,
+        }
+    }
+
+    pub fn multiply(&self, v2: &Vec2) -> Vec2 {
+        Vec2 {
+            x: self.x * v2.x,
+            y: self.y * v2.y,
+        }
+    }
+
+    pub fn map<F: Fn(&Vec2) -> Vec2>(&self, f: F) -> Vec2 {
+        f(self)
+    }
+}
+
 pub fn read_input_example() -> String {
     read_to_string("data/day9/example.txt")
         .unwrap()
