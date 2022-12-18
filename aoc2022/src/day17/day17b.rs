@@ -1,4 +1,4 @@
-use crate::day17::day17a::{format_tower, highest_occupied_y, is_legal, shapes, Shape};
+use crate::day17::day17a::{highest_occupied_y, is_legal, shapes, Shape};
 use crate::day9::day9a::Vec2;
 use std::collections::HashSet;
 
