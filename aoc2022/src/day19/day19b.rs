@@ -22,8 +22,9 @@ pub fn solve(input: String) -> i32 {
                 geode_robots: 0,
             },
             32,
+            true,
         );
-        result += res.geode
+        result *= res.geode
     }
     result
 }
@@ -35,10 +36,9 @@ mod tests {
     use super::*;
 
     #[test]
-    #[ignore]
     fn should_solve() {
         let input = read_input();
         let result = solve(input);
-        assert_eq!(result, 0);
+        assert_eq!(result, 3003);
     }
 }
