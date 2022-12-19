@@ -96,6 +96,7 @@ pub fn solve(input: String) -> i32 {
                 geode_robots: 0,
             },
             24,
+            false,
         );
         result += bp.id * res.geode
     }
@@ -107,6 +108,7 @@ pub fn optimize(
     resources: &Resources,
     robots: &Robots,
     minute: i32,
+    min_ore_optimization: bool,
 ) -> Resources {
     if minute == 0 {
         return *resources;
@@ -125,6 +127,7 @@ pub fn optimize(
                 geode_robots: 1,
             }),
             minute - 1,
+            min_ore_optimization,
         );
         results.push(geode_result);
     }
@@ -141,6 +144,7 @@ pub fn optimize(
                 geode_robots: 0,
             }),
             minute - 1,
+            min_ore_optimization,
         );
         results.push(obsidian_result);
     }
@@ -157,6 +161,7 @@ pub fn optimize(
                     geode_robots: 0,
                 }),
                 minute - 1,
+                min_ore_optimization,
             );
             results.push(clay_result);
         }
@@ -173,12 +178,21 @@ pub fn optimize(
                     geode_robots: 0,
                 }),
                 minute - 1,
+                min_ore_optimization,
             );
             results.push(ore_result);
         }
 
-        let nothing_result = optimize(blueprint, &resources.add(robots), &robots, minute - 1);
-        results.push(nothing_result);
+        if !min_ore_optimization || resources.ore < 4 {
+            let nothing_result = optimize(
+                blueprint,
+                &resources.add(robots),
+                &robots,
+                minute - 1,
+                min_ore_optimization,
+            );
+            results.push(nothing_result);
+        }
     }
     return results.into_iter().max_by_key(|r| r.geode).unwrap();
 }
@@ -229,6 +243,7 @@ mod tests {
         assert_eq!(result, 33);
     }
 
+    #[ignore]
     #[test]
     fn should_solve() {
         let input = read_input();
