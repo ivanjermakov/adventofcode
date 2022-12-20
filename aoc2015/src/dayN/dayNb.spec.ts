@@ -4,6 +4,6 @@ import {solve} from './dayNb'
 
 xdescribe('dayNb', () => {
 	it('should solve', () => {
-		assert.equal(solve(readInput()), 42)
+		assert.equal(solve(readInput()), 0)
 	})
 })

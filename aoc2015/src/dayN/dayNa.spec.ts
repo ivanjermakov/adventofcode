@@ -3,6 +3,6 @@ import {readInput, solve} from './dayNa'
 
 xdescribe('dayNa', () => {
 	it('should solve', () => {
-		assert.equal(solve(readInput()), 42)
+		assert.equal(solve(readInput()), 0)
 	})
 })
