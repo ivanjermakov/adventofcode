@@ -4,6 +4,6 @@ import {solve} from './day19b'
 
 describe('day19b', () => {
 	it('should solve', () => {
-		assert.equal(solve(readInput()), 0)
+		assert.equal(solve(readInput()), 200)
 	})
 })
