@@ -237,6 +237,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn should_solve_example() {
         let input = read_input_example();
         let result = solve(input);

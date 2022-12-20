@@ -35,6 +35,7 @@ mod tests {
 
     use super::*;
 
+    #[ignore]
     #[test]
     fn should_solve() {
         let input = read_input();
