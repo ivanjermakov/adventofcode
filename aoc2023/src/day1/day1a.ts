@@ -5,9 +5,10 @@ export function readInput(): string {
 }
 
 export function solve(input: string): number {
-    const data = input.split('\n').map(l => {
-        const dgs = l.split('').map(c => parseInt(c)).filter(n => !!n)
-        return Number('' + dgs[0] + dgs.at(-1)!)
-    }).reduce((a, b) => a + b, 0)
-    return data
+    return input.split('\n')
+        .map(l => {
+            const dgs = l.split('').map(c => parseInt(c)).filter(n => !!n)
+            return parseInt('' + dgs[0] + dgs.at(-1)!)!
+        })
+        .reduce((a, b) => a + b, 0)
 }
