@@ -5,18 +5,7 @@ export function readInput(): string {
 }
 
 export function solve(input: string): number {
-    const maps = input.split('\n').map(l => {
-        const maps: Map<string, number>[] = []
-        l.split('; ')
-            .forEach(g => {
-                maps.push(new Map())
-                g.split(', ').forEach(p => {
-                    const ws = p.split(' ')
-                    maps.at(-1)!.set(ws[1], (maps.at(-1)!.get(ws[1]) ?? 0) + parseInt(ws[0]))
-                })
-            })
-        return maps
-    })
+    const maps = getMaps(input)
     return maps.map((ms, i) => <const>[ms, i])
         .filter(([ms,]) => ms.every(m =>
             (!m.get('red') || m.get('red')! <= 12) &&
@@ -25,4 +14,20 @@ export function solve(input: string): number {
         ))
         .map(([, i]) => i + 1)
         .reduce((a, b) => a + b, 0)
+}
+
+export function getMaps(input: string): Map<string, number>[][] {
+    return input.split('\n').map(l => {
+        const maps: Map<string, number>[] = []
+        l.split('; ')
+            .forEach(g => {
+                maps.push(new Map())
+                g.split(', ').forEach(p => {
+                    const ws = p.split(' ')
+                    const oldV = (maps.at(-1)!.get(ws[1]) ?? 0)
+                    maps.at(-1)!.set(ws[1], oldV + parseInt(ws[0]))
+                })
+            })
+        return maps
+    })
 }
