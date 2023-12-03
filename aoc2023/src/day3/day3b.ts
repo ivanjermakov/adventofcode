@@ -1,3 +1,5 @@
+import { getAdj } from "./day3a"
+
 export function solve(input: string): number {
     const lines = input.split('\n')
 
@@ -12,14 +14,11 @@ export function solve(input: string): number {
         }
     }
     gearPoss.forEach(([y, x]) => {
-        const adj: [number, number][] = [
-            [y - 1, x - 1], [y - 1, x], [y - 1, x + 1],
-            [y, x - 1], [y, x + 1],
-            [y + 1, x - 1], [y + 1, x], [y + 1, x + 1],
-        ]
-        const numbers = [...new Set(adj.map(a => numberAt(input, a)).filter(n => !!n).map(n => n!))]
-        if (numbers.length === 2) {
-            vs.push(parseInt(numbers[0]) * parseInt(numbers[1]))
+        const ns = [...new Set(getAdj(y, x)
+            .map(a => numberAt(input, a)).filter(n => !!n).map(n => n!))]
+            .map(n => parseInt(n))
+        if (ns.length === 2) {
+            vs.push(ns[0] * ns[1])
         }
     })
     return vs.reduce((a, b) => a + b, 0)

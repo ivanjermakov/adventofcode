@@ -13,17 +13,10 @@ export function solve(input: string): number {
         const line = lines[y]
         let seq = ''
         let bad = false
-        // WHY +1 ????????????????????????????????????????????!!!!!!!!!!!!!!!!!!!
-        for (let x = 0; x < line.length + 1; x++) {
+        for (let x = 0; x < line.length; x++) {
             const char = line[x]
             if (char >= '0' && char <= '9') {
-                const adj = [
-                    lines.at(y - 1)?.at(x - 1), lines.at(y - 1)?.at(x), lines.at(y - 1)?.at(x + 1),
-                    lines.at(y)?.at(x - 1), lines.at(y)?.at(x + 1),
-                    lines.at(y + 1)?.at(x - 1), lines.at(y + 1)?.at(x), lines.at(y + 1)?.at(x + 1),
-                ]
-                if (adj.every(a => a === undefined || ok(a))) {
-                } else {
+                if (!getAdj(y, x).map(([ay, ax]) => lines.at(ay)?.at(ax)).every(a => a === undefined || ok(a))) {
                     bad = true
                 }
                 seq += char
@@ -35,6 +28,17 @@ export function solve(input: string): number {
                 bad = false
             }
         }
+        if (bad && seq.length > 0) {
+            vs.push(parseInt(seq))
+        }
     }
     return vs.reduce((a, b) => a + b, 0)
+}
+
+export function getAdj(y: number, x: number): [number, number][] {
+    return [
+        [y - 1, x - 1], [y - 1, x], [y - 1, x + 1],
+        [y, x - 1], [y, x + 1],
+        [y + 1, x - 1], [y + 1, x], [y + 1, x + 1],
+    ]
 }
