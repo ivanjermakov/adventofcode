@@ -1,4 +1,4 @@
-import { solve } from '../day1/day1b'
+import { solve } from '../dayN/dayNb'
 import { readInput } from './dayNa'
 
 describe.skip('dayNb', () => {
