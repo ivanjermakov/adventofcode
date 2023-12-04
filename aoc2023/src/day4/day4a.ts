@@ -5,17 +5,17 @@ export function readInput(): string {
 }
 
 export function solve(input: string): number {
-    return input.split('\n').map(wonCount).map(points).reduce((a, b) => a + b, 0)
+    return input
+        .split('\n')
+        .map(wonCount)
+        .filter(c => c !== 0)
+        .map(c => 2 ** (c - 1))
+        .reduce((a, b) => a + b, 0)
 }
 
 export function wonCount(card: string): number {
     const [winning, mine] = card.replaceAll('  ', ' ').split(' | ').map(g => g.split(' ').map(s => Number(s.trim())))
     return intersect(mine, winning).length
-}
-
-export function points(count: number): number {
-    if (count == 0) return 0
-    return 2 ** (count - 1)
 }
 
 export function intersect<T>(a: T[], b: T[]): T[] {
