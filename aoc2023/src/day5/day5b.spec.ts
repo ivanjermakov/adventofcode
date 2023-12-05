@@ -1,8 +1,9 @@
-import { readInput, solve } from './day5a'
+import { solve } from '../day5/day5b'
+import { readInput } from './day5a'
 
-describe('day5a', () => {
+describe('day5b', () => {
     it('should solve', () => {
-        expect(solve(readInput())).toEqual(1181555926)
+        expect(solve(readInput())).toEqual(37806486)
     })
     it('should solve example', () => {
         expect(solve(`seeds: 79 14 55 13
@@ -37,6 +38,7 @@ temperature-to-humidity map:
 
 humidity-to-location map:
 60 56 37
-56 93 4`)).toEqual(35)
+56 93 4`)).toEqual(46)
     })
 })
+
