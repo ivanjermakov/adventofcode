@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs'
 
 export const ranks: string[] = '23456789TJQKA'.split('')
-export const hands: string[] = ['high', 'one', 'two', 'three', 'full-house', 'four', 'five']
+export const hands = <const>['high', 'one', 'two', 'three', 'full-house', 'four', 'five']
 
-export type Hand = 'five' | 'four' | 'full-house' | 'three' | 'two' | 'one' | 'high'
+export type Hand = typeof hands[number]
 
 export function readInput(): string {
     return readFileSync('data/day7.txt').toString().trim()
