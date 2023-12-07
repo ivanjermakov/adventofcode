@@ -22,9 +22,9 @@ QQQJA 483`)).toEqual(5905)
     })
 
     it('should cmp', () => {
-        expect(cmp('JKKK2'.split(''), 'QQQQ2'.split('')) < 0).toBeTrue()
-        expect(cmp('2AAAA'.split(''), '33332'.split('')) < 0).toBeTrue()
-        expect(cmp('77788'.split(''), '77888'.split('')) < 0).toBeTrue()
+        expect(cmp('JKKK2'.split(''), 'QQQQ2'.split(''))).toBeLessThan(0)
+        expect(cmp('2AAAA'.split(''), '33332'.split(''))).toBeLessThan(0)
+        expect(cmp('77788'.split(''), '77888'.split(''))).toBeLessThan(0)
     })
 })
 
