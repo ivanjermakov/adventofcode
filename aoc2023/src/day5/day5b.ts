@@ -5,7 +5,7 @@ export function solve(input: string): number {
     let sections = input.split('\n\n')
     let seeds = chunk(sections[0].split(' ').slice(1).map(s => parseInt(s)), 2).map(([st, s]) => <Range>[st, st + s - 1])
     let maps = sections.slice(1).map(section => section.split('\n').slice(1).map(l => l.split(' ').map(s => parseInt(s))))
-    const res = maps.reduce((res, m) => [...new Set(res.flatMap(s => map(m, s)))], seeds)
+    const res = maps.reduce((res, m) => [...new Set(res.flatMap(s => map(m, <Range>s)))], seeds)
     res.sort((a, b) => a[0] - b[0])
     return res[0][0]
 }
@@ -16,7 +16,7 @@ export function map(ms: number[][], seed: Range): Range[] {
         const r = overlap(sourceRange, seed)
         if (!r) return []
         const off = m[0] - sourceRange[0]
-        return [[r[0] + off, r[1] + off]]
+        return [<Range>[r[0] + off, r[1] + off]]
     })
     return res.length ? res : [seed]
 }
