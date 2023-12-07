@@ -1,4 +1,4 @@
-import { getHand, ordHand } from "./day7a";
+import { getHand, hands } from "./day7a";
 
 export const ranks: string[] = 'J23456789TQKA'.split('')
 
@@ -9,8 +9,8 @@ export function solve(input: string): number {
 }
 
 export function cmp(g1: string[], g2: string[], enhance = false): number {
-    const o1 = enhance ? ordHand(getHand(enhanceJ(g1))) : ordHand(getHand(g1))
-    const o2 = enhance ? ordHand(getHand(enhanceJ(g2))) : ordHand(getHand(g2))
+    const o1 = hands.indexOf(enhance ? getHand(enhanceJ(g1)) : getHand(g1))
+    const o2 = hands.indexOf(enhance ? getHand(enhanceJ(g2)) : getHand(g2))
     if (o1 == o2) {
         for (let i = 0; i < g1.length; i++) {
             let c1 = ranks.indexOf(g1[i])
@@ -31,7 +31,7 @@ export function enhanceJ(cs: string[]): string[] {
     }
     dist.delete('J')
 
-    // fast path for all Js
+    // all Js is always all As
     if (dist.size === 0) return 'AAAAA'.split('')
 
     const distA = [...dist.entries()]
