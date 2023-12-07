@@ -1,7 +1,9 @@
 name: aoc2015
 
 on:
-  - push
+  - push:
+    paths:
+      - aoc2015/**
   - pull_request
 
 jobs:
