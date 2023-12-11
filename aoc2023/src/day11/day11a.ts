@@ -14,11 +14,12 @@ export function solve(input: string, scale: number = 2): number {
         .filter(([c,]) => c === '#')
         .map(([, j]) => <Pos>[i, j])
     )
-    return [...comb2(ps)].map(([[ai, aj], [bi, bj]]) => {
-        const colsBetween = empty[0].filter(e => Math.min(ai, bi) < e && Math.max(ai, bi) > e).length
-        const rowsBetween = empty[1].filter(e => Math.min(aj, bj) < e && Math.max(aj, bj) > e).length
-        const countBetween = colsBetween + rowsBetween
-        return manhattanDist([ai, aj], [bi, bj]) + countBetween * (scale - 1)
+    return [...comb2(ps)].map(([a, b]) => {
+        const betweenCount = (l: number[], a: number, b: number) =>
+            l.filter(e => Math.min(a, b) < e && Math.max(a, b) > e).length
+        const colsBetween = betweenCount(empty[0], a[0], b[0])
+        const rowsBetween = betweenCount(empty[1], a[1], b[1])
+        return manhattanDist(a, b) + (rowsBetween + colsBetween) * (scale - 1)
     }).reduce((a, b) => a + b, 0)
 }
 
