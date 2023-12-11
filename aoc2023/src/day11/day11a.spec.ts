@@ -1,0 +1,19 @@
+import { readInput, solve } from './day11a'
+
+describe('day11a', () => {
+    it('should solve', () => {
+        expect(solve(readInput())).toEqual(9795148)
+    })
+    it('should solve example', () => {
+        expect(solve(`...#......
+.......#..
+#.........
+..........
+......#...
+.#........
+.........#
+..........
+.......#..
+#...#.....`)).toEqual(374)
+    })
+})
