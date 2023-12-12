@@ -1,6 +1,6 @@
 import { readInput, solve } from './day12a'
 
-describe.skip('day12a', () => {
+describe('day12a', () => {
     it('should solve', () => {
         expect(solve(readInput())).toEqual(7163)
     })

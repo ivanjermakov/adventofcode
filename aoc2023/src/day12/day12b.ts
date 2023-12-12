@@ -1,4 +1,4 @@
-import { parse, solveRow } from './day12a'
+import { parse, solveRowCached } from './day12a'
 
 export function solve(input: string, copies: number): number {
     return input
@@ -7,7 +7,10 @@ export function solve(input: string, copies: number): number {
             const [row, groups] = parse(l)
             return <const>[repeat(row, copies, '?'), repeat(groups, copies)]
         })
-        .map(([row, groups]) => solveRow(row, groups))
+        .map(([row, groups], i) => {
+            const res = solveRowCached(row, groups)
+            return res
+        })
         .reduce((a, b) => a + b, 0)
 }
 
