@@ -11,20 +11,20 @@ export function solve(input: string): number {
     return input
         .split('\n')
         .map(parse)
-        .map(([row, groups]) => solveRowCached(row, groups))
+        .map(([row, groups]) => solveRow(row, groups))
         .reduce((a, b) => a + b, 0)
 }
 
-export function solveRowCached(row: string[], groups: number[], route: string[] = [], mustContinue = false): number {
+export function solveRow(row: string[], groups: number[], mustContinue = false): number {
     const key = row.join() + groups.join() + mustContinue
     const cached = cache.get(key)
     if (cached !== undefined) return cached
-    const res = solveRow(row, groups, route, mustContinue)
+    const res = solveRow_(row, groups, mustContinue)
     cache.set(key, res)
     return res
 }
 
-export function solveRow(row: string[], groups: number[], route: string[] = [], mustContinue = false): number {
+export function solveRow_(row: string[], groups: number[], mustContinue: boolean): number {
     if (row.length === 0) {
         return groups.length === 0 ? 1 : 0
     }
@@ -32,24 +32,24 @@ export function solveRow(row: string[], groups: number[], route: string[] = [], 
     if (groups.length === 0) return row.every(e => e !== '#') ? 1 : 0
 
     if (row[0] === '.') {
-        return solveRowCached(row.slice(1), groups, [...route, row[0]])
+        return solveRow(row.slice(1), groups)
     }
     if (row[0] === '#') {
         if (groups[0] === 1) {
             if (row.length > 1 && row[1] === '#') return 0
             if (row.length === 1) {
-                return solveRowCached(row.slice(1), groups.slice(1), [...route, row[0], '.'])
+                return solveRow(row.slice(1), groups.slice(1))
             }
-            return solveRowCached(row.slice(2), groups.slice(1), [...route, row[0], '.'])
+            return solveRow(row.slice(2), groups.slice(1))
         }
-        return solveRowCached(row.slice(1), [groups[0] - 1, ...groups.slice(1)], [...route, row[0]], true)
+        return solveRow(row.slice(1), [groups[0] - 1, ...groups.slice(1)], true)
     }
     if (row[0] === '?') {
         if (mustContinue) {
-            return solveRowCached(['#', ...row.slice(1)], groups, route, mustContinue)
+            return solveRow(['#', ...row.slice(1)], groups, mustContinue)
         }
-        return solveRowCached(['#', ...row.slice(1)], groups, route, mustContinue) +
-            solveRowCached(['.', ...row.slice(1)], groups, route, mustContinue)
+        return solveRow(['#', ...row.slice(1)], groups, mustContinue) +
+            solveRow(['.', ...row.slice(1)], groups, mustContinue)
     }
 
     return unreachable()
