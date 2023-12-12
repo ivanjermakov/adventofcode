@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "AOC 2023",
     "main": "index.js",
+    "type": "module",
     "scripts": {
         "build": "tsc --build",
         "test": "bun test \"src\""
