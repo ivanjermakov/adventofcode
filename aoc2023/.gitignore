@@ -2,3 +2,5 @@
 node_modules
 dist
 pnpm-lock.yaml
+0x
+perf.data*
