@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { transpose } from '../day11/day11a'
+import { range } from 'lodash'
 
 export function readInput(): string {
     return readFileSync('data/day13.txt').toString().trim()
@@ -14,19 +15,11 @@ export function solve(input: string): number {
 }
 
 export function symmetryScores(grid: string[][]): number[] {
-    const ss = []
-    for (let r = 0; r < grid.length - 1; r++) {
-        if (isSymmetrical(r, grid)) {
-            ss.push((r + 1) * 100)
-        }
-    }
-    const gridTr = transpose(grid)
-    for (let c = 0; c < gridTr.length - 1; c++) {
-        if (isSymmetrical(c, gridTr)) {
-            ss.push(c + 1)
-        }
-    }
-    return ss
+    const grTr = transpose(grid)
+    return [
+        ...range(grid.length - 1).filter(r => isSymmetrical(r, grid)).map(r => (r + 1) * 100),
+        ...range(grTr.length - 1).filter(c => isSymmetrical(c, grTr)).map(c => c + 1)
+    ]
 }
 
 export function isSymmetrical(i: number, grid: string[][]): boolean {
