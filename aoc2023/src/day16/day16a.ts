@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs'
-import { isEqual, uniqWith } from 'lodash'
 import { Pos } from '../day10/day10a'
 import { unreachable } from '../util'
 
@@ -8,23 +7,26 @@ export interface Ray {
     dir: Pos
 }
 
+export function rStr(r: Ray): string {
+    return r.pos.join() + ';' + r.dir.join()
+}
+
 export function readInput(): string {
     return readFileSync('data/day16.txt').toString().trim()
 }
 
-export function solve(input: string): number {
+export function solve(input: string, start: Ray = { pos: [0, 0], dir: [0, 1] }): number {
     const g = input.split('\n').map(r => r.split(''))
-    const hist: Ray[] = []
-    let rs: Ray[] = [{ pos: [0, 0], dir: [0, 1] }]
+    const hist = new Set<string>()
+    let rs: Ray[] = [start]
     while (rs.length > 0) {
-        hist.push(...rs)
-        console.log(hist.length)
+        rs.map(r => rStr(r)).forEach(r => hist.add(r))
         rs = rs
             .flatMap(r => propagate(r, g[r.pos[0]][r.pos[1]]))
             .filter(r => r.pos[0] >= 0 && r.pos[0] < g.length && r.pos[1] >= 0 && r.pos[1] < g[0].length)
-            .filter(r => !hist.find(h => isEqual(r, h)))
+            .filter(r => !hist.has(rStr(r)))
     }
-    return uniqWith(hist, (a, b) => isEqual(a.pos, b.pos)).length
+    return new Set([...hist.values()].map(s => s.split(';')[0])).size
 }
 
 export function propagate(ray: Ray, cell: string): Ray[] {
