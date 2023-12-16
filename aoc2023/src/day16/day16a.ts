@@ -15,8 +15,12 @@ export function readInput(): string {
     return readFileSync('data/day16.txt').toString().trim()
 }
 
-export function solve(input: string, start: Ray = { pos: [0, 0], dir: [0, 1] }): number {
+export function solve(input: string,): number {
     const g = input.split('\n').map(r => r.split(''))
+    return explored(g)
+}
+
+export function explored(g: string[][], start: Ray = { pos: [0, 0], dir: [0, 1] }): number {
     const hist = new Set<string>()
     let rs: Ray[] = [start]
     while (rs.length > 0) {
