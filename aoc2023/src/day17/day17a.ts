@@ -19,14 +19,14 @@ export function solve(input: string): number {
     return heat([g.length - 1, g[0].length - 1], g)
 }
 
-export function heat(target: Pos, g: number[][],): number {
+export function heat(target: Pos, g: number[][], min: number = 0, max: number = 3): number {
     const q = new PriorityQueue<Node>((a, b) => a.heat - b.heat)
     q.push({ pos: [0, 0], heat: 0, dirCount: 0 })
     const visited = new Set<string>()
 
     while (q.size() > 0) {
         let u = q.pop()!
-        if (posEq(u.pos, target)) return u.heat
+        if (u.dirCount >= min - 1 && posEq(u.pos, target)) return u.heat
 
         const key = [u.pos[0], u.pos[1], u.dir?.[0], u.dir?.[1], u.dirCount].join()
         if (visited.has(key)) continue
@@ -37,7 +37,8 @@ export function heat(target: Pos, g: number[][],): number {
             if (nPos[0] < 0 || nPos[0] > g.length - 1 || nPos[1] < 0 || nPos[1] > g[0].length - 1) continue
             if (posEq(u.dir, [-nDir[0], -nDir[1]])) continue
             const nDirCount = posEq(u.dir, nDir) ? u.dirCount + 1 : 0
-            if (nDirCount >= 3) continue
+            if (u.dir && !posEq(u.dir, nDir) && u.dirCount < min - 1) continue
+            if (nDirCount >= max) continue
             q.push({
                 pos: nPos,
                 heat: u.heat + g[nPos[0]][nPos[1]],
