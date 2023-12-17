@@ -1,18 +1,7 @@
-import { PriorityQueue } from '@datastructures-js/priority-queue'
-import { readFileSync } from 'fs'
-import { Pos } from '../day10/day10a'
-import { unreachable } from '../util'
-
-export interface Node {
-    pos: Pos
-    heat: number
-    dirCount: number
-    dir?: Pos
-}
-
-export function readInput(): string {
-    return readFileSync('data/day17.txt').toString().trim()
-}
+import { PriorityQueue } from "@datastructures-js/priority-queue"
+import { Pos } from "../day10/day10a"
+import { unreachable } from "../util"
+import { Node, posEq } from "./day17a"
 
 export function solve(input: string): number {
     const g = input.split('\n').map(r => r.split('').map(c => parseInt(c)))
@@ -26,7 +15,7 @@ export function heat(target: Pos, g: number[][],): number {
 
     while (q.size() > 0) {
         let u = q.pop()!
-        if (posEq(u.pos, target)) return u.heat
+        if (u.dirCount >= 3 && posEq(u.pos, target)) return u.heat
 
         const key = [u.pos[0], u.pos[1], u.dir?.[0], u.dir?.[1], u.dirCount].join()
         if (visited.has(key)) continue
@@ -37,7 +26,8 @@ export function heat(target: Pos, g: number[][],): number {
             if (nPos[0] < 0 || nPos[0] > g.length - 1 || nPos[1] < 0 || nPos[1] > g[0].length - 1) continue
             if (posEq(u.dir, [-nDir[0], -nDir[1]])) continue
             const nDirCount = posEq(u.dir, nDir) ? u.dirCount + 1 : 0
-            if (nDirCount >= 3) continue
+            if (u.dir && !posEq(u.dir, nDir) && u.dirCount < 3) continue
+            if (nDirCount >= 10) continue
             q.push({
                 pos: nPos,
                 heat: u.heat + g[nPos[0]][nPos[1]],
@@ -50,7 +40,4 @@ export function heat(target: Pos, g: number[][],): number {
     return unreachable('no path')
 }
 
-export function posEq(a: Pos | undefined, b: Pos | undefined): boolean {
-    if (!a || !b) return false
-    return a[0] === b[0] && a[1] === b[1]
-}
+
