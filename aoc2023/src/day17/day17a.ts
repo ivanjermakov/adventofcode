@@ -1,6 +1,5 @@
 import { PriorityQueue } from '@datastructures-js/priority-queue'
 import { readFileSync } from 'fs'
-import { isEqual } from 'lodash'
 import { Pos } from '../day10/day10a'
 import { unreachable } from '../util'
 
@@ -27,7 +26,7 @@ export function heat(target: Pos, g: number[][],): number {
 
     while (q.size() > 0) {
         let u = q.pop()!
-        if (isEqual(u.pos, target)) return u.heat
+        if (posEq(u.pos, target)) return u.heat
 
         const key = [u.pos[0], u.pos[1], u.dir?.[0], u.dir?.[1], u.dirCount].join()
         if (visited.has(key)) continue
@@ -36,8 +35,8 @@ export function heat(target: Pos, g: number[][],): number {
         for (let nDir of [[-1, 0], [0, 1], [1, 0], [0, -1]].map((dir) => <Pos>dir)) {
             const nPos = <Pos>[u.pos[0] + nDir[0], u.pos[1] + nDir[1]]
             if (nPos[0] < 0 || nPos[0] > g.length - 1 || nPos[1] < 0 || nPos[1] > g[0].length - 1) continue
-            if (isEqual(u.dir, [-nDir[0], -nDir[1]])) continue
-            const nDirCount = isEqual(u.dir, nDir) ? u.dirCount + 1 : 0
+            if (posEq(u.dir, [-nDir[0], -nDir[1]])) continue
+            const nDirCount = posEq(u.dir, nDir) ? u.dirCount + 1 : 0
             if (nDirCount >= 3) continue
             q.push({
                 pos: nPos,
@@ -51,3 +50,7 @@ export function heat(target: Pos, g: number[][],): number {
     return unreachable('no path')
 }
 
+export function posEq(a: Pos | undefined, b: Pos | undefined): boolean {
+    if (!a || !b) return false
+    return a[0] === b[0] && a[1] === b[1]
+}
