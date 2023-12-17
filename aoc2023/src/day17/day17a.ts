@@ -1,3 +1,4 @@
+import { PriorityQueue } from '@datastructures-js/priority-queue'
 import { readFileSync } from 'fs'
 import { isEqual } from 'lodash'
 import { Pos } from '../day10/day10a'
@@ -20,11 +21,12 @@ interface Node {
 }
 
 export function heat(target: Pos, g: number[][],): number {
-    const q: Node[] = [{ pos: [0, 0], heat: 0, dirCount: 0 }]
+    const q = new PriorityQueue<Node>((a, b) => a.heat - b.heat)
+    q.push({ pos: [0, 0], heat: 0, dirCount: 0 })
     const visited = new Set<string>()
 
-    while (q.length > 0) {
-        let u = q.sort((a, b) => b.heat - a.heat).pop()!
+    while (q.size() > 0) {
+        let u = q.pop()!
         if (isEqual(u.pos, target)) return u.heat
 
         const key = [u.pos[0], u.pos[1], u.dir?.[0], u.dir?.[1], u.dirCount].join()
