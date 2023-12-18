@@ -1,8 +1,9 @@
-import { readInput, solve } from './day18a'
+import { solve } from '../day18/day18b'
+import { readInput } from './day18a'
 
-describe.skip('day18a', () => {
+describe('day18b', () => {
     it('should solve', () => {
-        expect(solve(readInput())).toEqual(46359)
+        expect(solve(readInput())).toEqual(0)
     })
     it('should solve example', () => {
         expect(solve(`R 6 (#70c710)
@@ -18,6 +19,7 @@ U 2 (#caa171)
 R 2 (#7807d2)
 U 3 (#a77fa3)
 L 2 (#015232)
-U 2 (#7a21e3)`)).toEqual(62)
+U 2 (#7a21e3)`)).toEqual(952408144115)
     })
 })
+
