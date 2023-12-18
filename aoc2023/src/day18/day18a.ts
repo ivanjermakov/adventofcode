@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs'
-import { Pos } from '../day10/day10a'
-import { assert } from '../util'
 import { isEqual } from 'lodash'
+import { Pos } from '../day10/day10a'
 import { posEq } from '../day17/day17a'
+import { assert } from '../util'
 
 export type Dir = 'U' | 'R' | 'D' | 'L'
 
@@ -18,7 +18,6 @@ export function dirToMove(dir: Dir): Pos {
 export interface DigInstruction {
     dir: Dir
     count: number
-    color: string
 }
 
 export function readInput(): string {
@@ -27,8 +26,8 @@ export function readInput(): string {
 
 export function solve(input: string): number {
     const instructions: DigInstruction[] = input.split('\n').map(l => {
-        const [dir, count, color] = l.replaceAll(/\(|\)/g, '').split(' ')
-        return { dir: <Dir>dir, count: parseInt(count), color }
+        const [dir, count] = l.replaceAll(/\(|\)/g, '').split(' ')
+        return { dir: <Dir>dir, count: parseInt(count) }
     })
     const border = []
     let pos = <Pos>[0, 0]
