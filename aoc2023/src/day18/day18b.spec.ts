@@ -1,12 +1,13 @@
-import { solve } from '../day18/day18b'
+import { solve } from '../day18/day18a'
+import { parse } from '../day18/day18b'
 import { readInput } from './day18a'
 
 describe('day18b', () => {
     it('should solve', () => {
-        expect(solve(readInput())).toEqual(0)
+        expect(solve(parse(readInput()))).toEqual(59574883048274)
     })
     it('should solve example', () => {
-        expect(solve(`R 6 (#70c710)
+        expect(solve(parse(`R 6 (#70c710)
 D 5 (#0dc571)
 L 2 (#5713f0)
 D 2 (#d2c081)
@@ -19,7 +20,7 @@ U 2 (#caa171)
 R 2 (#7807d2)
 U 3 (#a77fa3)
 L 2 (#015232)
-U 2 (#7a21e3)`)).toEqual(952408144115)
+U 2 (#7a21e3)`))).toEqual(952408144115)
     })
 })
 
