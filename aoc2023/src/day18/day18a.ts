@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs'
 import { isEqual } from 'lodash'
 import { Pos } from '../day10/day10a'
-import { posEq } from '../day17/day17a'
 import { assert } from '../util'
 
 export type Dir = 'U' | 'R' | 'D' | 'L'
@@ -24,37 +23,32 @@ export function readInput(): string {
     return readFileSync('data/day18.txt').toString().trim()
 }
 
-export function solve(input: string): number {
-    const instructions: DigInstruction[] = input.split('\n').map(l => {
+export function parse(input: string): DigInstruction[] {
+    return input.split('\n').map(l => {
         const [dir, count] = l.replaceAll(/\(|\)/g, '').split(' ')
         return { dir: <Dir>dir, count: parseInt(count) }
     })
-    const border = []
+}
+
+export function solve(instructions: DigInstruction[]): number {
+    const nodes = []
     let pos = <Pos>[0, 0]
     for (const inst of instructions) {
         const m = dirToMove(inst.dir)
-        for (let i = 0; i < inst.count; i++) {
-            pos = [pos[0] + m[0], pos[1] + m[1]]
-            border.push(pos)
-        }
+        pos = [pos[0] + inst.count * m[0], pos[1] + inst.count * m[1]]
+        nodes.push(pos)
     }
-    assert(isEqual(border.at(-1)!, [0, 0]))
-    return fill([1, 1], border) + border.length
+    assert(isEqual(nodes.at(-1)!, [0, 0]))
+
+    let sum = 0
+    for (let i = 0; i < nodes.length - 1; i++) {
+        const a = nodes[i]
+        const b = nodes[i + 1]
+        sum += (a[1] * b[0])
+        sum -= (a[0] * b[1])
+    }
+
+    const permieter = instructions.map(n => n.count).reduce((a, b) => a + b, 0)
+    return (permieter / 2 + 1) + 0.5 * sum
 }
 
-export function fill(start: Pos, border: Pos[]): number {
-    const filled = new Set<string>()
-    const q = [start]
-
-    while (q.length > 0) {
-        const n = q.pop()!
-        const key = [n[0], n[1]].join()
-        if (filled.has(key)) continue
-        if (border.find(b => posEq(b, n))) continue
-        filled.add(key)
-        for (const d of [[-1, 0], [0, 1], [1, 0], [0, -1]]) {
-            q.push([n[0] + d[0], n[1] + d[1]])
-        }
-    }
-    return filled.size
-}
