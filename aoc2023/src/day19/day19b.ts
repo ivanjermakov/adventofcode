@@ -9,7 +9,7 @@ export interface Part {
 }
 
 export function solve(input: string): number {
-    const [, rules] = parse(input)
+    const rules = parse(input)[1]
     const p: Part = { x: [1, 4000], m: [1, 4000], a: [1, 4000], s: [1, 4000] }
     return process(p, 'in', rules)
         .map(r => [r.x, r.m, r.a, r.s].flatMap(r => r[1] - r[0] + 1).reduce((a, b) => a * b, 1))
@@ -20,8 +20,8 @@ export function process(part: Part, rule: string, rules: Map<string, Rule>): Par
     if (rule === 'A') return [part]
     if (rule === 'R') return []
     const r = rules.get(rule)!
-    let p = structuredClone(part)
     const ps: Part[] = []
+    let p = part
     for (const f of r.filters) {
         const [down, next] = processFilter(p, f)
         if (down) {
