@@ -32,6 +32,20 @@ export interface Button {
 }
 
 export function solve(input: string, count: number): number {
+    const { routes, modules } = parse(input)
+    const signals: Signal[] = []
+    for (let i = 0; i < count; i++) {
+        let active: Signal[] = [{ from: 'button', high: false, to: 'broadcaster' }]
+        while (active.length > 0) {
+            signals.push(...active)
+            active = active.flatMap(s => handleSignal(s, routes, modules))
+        }
+    }
+
+    return signals.filter(s => s.high).length * signals.filter(s => !s.high).length
+}
+
+export function parse(input: string): { routes: Map<string, string[]>; modules: Map<string, Module> } {
     const routes = new Map<string, string[]>(input.split('\n').map(l => {
         const [left, right] = l.split(' -> ')
         const n = left.replace(/[%&]/g, '')
@@ -59,20 +73,7 @@ export function solve(input: string, count: number): number {
         return unreachable()
     }))
     modules.set('button', { type: 'button' })
-    // console.log(routes)
-    // console.log(modules)
-
-    const signals: Signal[] = []
-    for (let i = 0; i < count; i++) {
-        let active: Signal[] = [{ from: 'button', high: false, to: 'broadcaster' }]
-        while (active.length > 0) {
-            signals.push(...active)
-            active = active.flatMap(s => handleSignal(s, routes, modules))
-        }
-    }
-
-    // console.log(signals)
-    return signals.filter(s => s.high).length * signals.filter(s => !s.high).length
+    return { routes, modules }
 }
 
 export function handleSignal(signal: Signal, routes: Map<string, string[]>, modules: Map<string, Module>): Signal[] {
