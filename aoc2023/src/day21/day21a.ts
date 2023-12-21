@@ -6,6 +6,7 @@ export function readInput(): string {
 }
 
 export function solve(input: string, steps: number): number {
+    const m = input.split('\n').length
     const ps = input
         .split('\n')
         .flatMap((r, i) => r
@@ -21,8 +22,9 @@ export function solve(input: string, steps: number): number {
         for (const p of res) {
             for (const n of [[-1, 0], [0, 1], [1, 0], [0, -1]]) {
                 const neigh = <Pos>[p[0] + n[0], p[1] + n[1]]
+                const neighShort = <Pos>[(5 * m + neigh[0]) % m, (5 * m + neigh[1]) % m]
                 const neighKey = key(neigh)
-                if (!lastSet.has(neighKey) && psSet.has(key([neigh[0] % 131, neigh[1] % 131]))) {
+                if (!lastSet.has(neighKey) && psSet.has(key(neighShort))) {
                     nLast.push(neigh)
                     lastSet.add(neighKey)
                 }
