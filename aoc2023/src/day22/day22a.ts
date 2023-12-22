@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs'
+import { min } from 'lodash'
 
 export interface Pos3 {
     x: number
@@ -14,8 +15,8 @@ export function readInput(): string {
     return readFileSync('data/day22.txt').toString().trim()
 }
 
-export function solve(input: string): number {
-    const bs: Brick[] = input.split('\n').map(b => {
+export function parse(input: string): Brick[] {
+    return input.split('\n').map(b => {
         const [s, e] = b.split('~')
         const [sx, sy, sz] = s.split(',').map(c => parseInt(c))
         const [ex, ey, ez] = e.split(',').map(c => parseInt(c))
@@ -29,10 +30,15 @@ export function solve(input: string): number {
         }
         return { cubes }
     })
+}
+
+export function solve(input: string): number {
+    const bs: Brick[] = parse(input)
+    const ps = new Set(bs.flatMap(b => b.cubes).map(key))
 
     let changed = true;
     while (changed) {
-        changed = step(bs)
+        changed = step(bs, ps)
     }
 
     let supportMap = new Map<number, Set<number>>()
@@ -52,13 +58,19 @@ export function solve(input: string): number {
         .length
 }
 
-export function step(bs: Brick[]): boolean {
+export function step(bs: Brick[], ps: Set<string>): boolean {
     let changed = false
     for (let i = 0; i < bs.length; i++) {
         const b = bs[i]
-        if (b.cubes.find(c => c.z === 1)) continue
-        if (b.cubes.every(c => !bs.find((b_, i_) => i !== i_ && brickContains(b_, { x: c.x, y: c.y, z: c.z - 1 })))) {
-            b.cubes.forEach(c => c.z--)
+        const minZ = min(b.cubes.map(c => c.z))!
+        if (b.cubes.filter(c => c.z === minZ).every(c => {
+            return c.z > 1 && !ps.has(key({ x: c.x, y: c.y, z: c.z - 1 }))
+        })) {
+            b.cubes.forEach(c => {
+                ps.delete(key(c))
+                c.z--
+                ps.add(key(c))
+            })
             changed = true
         }
     }
@@ -67,10 +79,6 @@ export function step(bs: Brick[]): boolean {
 
 export function key(pos: Pos3): string {
     return JSON.stringify(pos)
-}
-
-export function brickContains(brick: Brick, pos: Pos3): boolean {
-    return brick.cubes.some(p => posEq(p, pos))
 }
 
 export function posEq(a: Pos3 | undefined, b: Pos3 | undefined): boolean {
