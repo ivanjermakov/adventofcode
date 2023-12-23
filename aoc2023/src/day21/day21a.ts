@@ -38,3 +38,7 @@ export function solve(input: string, steps: number): number {
 export function key(obj: any): string {
     return JSON.stringify(obj)
 }
+
+export function fromKey(str: string): unknown {
+    return JSON.parse(str)
+}
