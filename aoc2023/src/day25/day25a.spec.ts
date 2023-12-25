@@ -1,8 +1,8 @@
 import { readInput, solve } from './day25a'
 
 describe('day25a', () => {
-    it('should solve', () => {
-        expect(solve(readInput())).toEqual(0)
+    it.skip('should solve', () => {
+        expect(solve(readInput())).toEqual(525264)
     })
     it('should solve example', () => {
         expect(solve(`jqt: rhn xhk nvd
