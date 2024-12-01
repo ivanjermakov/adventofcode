@@ -1,22 +1,18 @@
 section .bss
-    out: resb 2048
-    input: resb 2048
-    a1: resb 2048
-    a2: resb 2048
-    result_str: resb 10
+    a1: resb 4 * 1024
+    a2: resb 4 * 1024
+    input: resb 20 * 1024
 
 section .data
     input_filename: db "data/day1a.txt", 0
     input_filename_len: equ $-input_filename
     fmt db "%s", 0
 
-    out_len: dd 0
-    input_len: dd 2048
+    input_len: dd 24000
     a1_len: dd 0
     a2_len: dd 0
     sort_arr_len: dd 0
     sort_arr: dd 0
-    result_str_len: dd 10
 
     i: dd 0
     j: dd 0
@@ -68,15 +64,15 @@ _start:
 
         ; for each char
         call parse_num
-        mov esi, [j]
-        mov [a1 + 4 * esi], eax
+        mov edi, [j]
+        mov [a1 + 4 * edi], eax
 
         ; skip spaces
         add dword [i], 3
 
         call parse_num
-        mov esi, [j]
-        mov [a2 + 4 * esi], eax
+        mov edi, [j]
+        mov [a2 + 4 * edi], eax
 
         inc dword [i]
         inc dword [j]
@@ -121,8 +117,8 @@ _start:
         jmp sum_loop
 
     print_res:
-        mov ecx, 0
-        mov edx, [result]
+        mov ecx, result
+        mov edx, 4
         call print
 
     call exit
@@ -138,12 +134,12 @@ parse_num:
         mov al, [esi]
         mov [e], al
 
-        cmp byte [e], 0x30
+        cmp [e], byte 0x30
         jl parse_num_done
-        cmp byte [e], 0x39
+        cmp [e], byte 0x39
         jg parse_num_done
 
-        sub byte [e], 0x30
+        sub [e], byte 0x30
 
         mov eax, [parsed_n]
         imul eax, 10
@@ -213,10 +209,9 @@ exit:
     int 0x80
     ret
 
-
 abs_diff:
     sub eax, ebx
-    js negate_result
+    jl negate_result
     ret
 
     negate_result:
