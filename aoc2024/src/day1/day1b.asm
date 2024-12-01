@@ -11,8 +11,6 @@ section .data
     input_len: dd 24000
     a1_len: dd 0
     a2_len: dd 0
-    sort_arr_len: dd 0
-    sort_arr: dd 0
 
     i: dd 0
     j: dd 0
@@ -83,35 +81,23 @@ _start:
     mov eax, [j]
     mov dword [a1_len], eax
     mov dword [a2_len], eax
-    mov dword [sort_arr_len], eax
 
-    ; in place sort a1
-    lea eax, a1
-    mov [sort_arr], eax
-    call sort
-
-    ; in place sort a2
-    lea eax, a2
-    mov [sort_arr], eax
-    call sort
-
-    ; iterate pairs calculating sum of their difference
+    ; iterate pairs calculating sum of similarity score
     mov [result], dword 0
     mov [i], dword 0
     sum_loop:
         mov eax, [i]
-        cmp eax, [sort_arr_len]
+        cmp eax, [a1_len]
         jge print_res
 
         mov ebx, [a1 + 4 * eax]
         mov [n], ebx
-        mov ebx, [a2 + 4 * eax]
-        mov [n2], ebx
-
-        mov eax, [n]
-        mov ebx, [n2]
-        call abs_diff
+        call count
+        imul eax, [n]
         add [result], eax
+; mov ecx, 0
+; mov edx, eax
+; call print
 
         inc dword [i]
         jmp sum_loop
@@ -122,6 +108,35 @@ _start:
         call print
 
     call exit
+
+; count occurrences of n in buf2
+; store count in eax
+count:
+    mov [k], dword 0
+    mov eax, [a1_len]
+    dec eax
+    mov [j], eax
+
+    count_loop:
+    cmp [j], dword 0
+    js count_done
+
+    mov ebx, [j]
+    mov eax, [a2 + 4 * ebx]
+    mov [n2], eax
+    cmp eax, [n]
+    jne count_neq
+
+    count_eq:
+        inc dword [k]
+    count_neq:
+
+    dec dword [j]
+    jmp count_loop
+
+    count_done:
+    mov eax, [k]
+    ret
 
 ; read buf[i] until byte is not in digits range (0x30 - 0x39), incrementing i
 ; store resulting u32 to eax
@@ -154,49 +169,6 @@ parse_num:
 
     ret
 
-; in place sort array sort_arr
-sort:
-    mov eax, [sort_arr_len]
-    mov dword [i], eax
-
-    sort_outer_loop:
-        cmp [i], dword 0
-        jz sort_done
-
-        ; for each element
-        mov [j], dword 0
-        sort_inner_loop:
-            mov eax, [sort_arr_len]
-            dec eax
-            cmp dword [j], eax
-            jge sort_inner_done
-
-            mov esi, [j]
-            imul esi, 4
-            add esi, [sort_arr]
-
-            mov eax, [esi]
-            mov ebx, [esi + 4]
-
-            cmp eax, ebx
-            jle sort_no_swap
-
-            sort_swap:
-                mov dword [esi], ebx
-                mov dword [esi + 4], eax
-            sort_no_swap:
-
-            inc dword [j]
-            jmp sort_inner_loop
-
-        sort_inner_done:
-        dec dword [i]
-        jmp sort_outer_loop
-        
-    sort_done:
-    ret
-
-
 print:
     mov eax, [write_id]
     mov ebx, 1
@@ -209,11 +181,3 @@ exit:
     int 0x80
     ret
 
-abs_diff:
-    sub eax, ebx
-    jl negate_result
-    ret
-
-    negate_result:
-        neg eax
-        ret
