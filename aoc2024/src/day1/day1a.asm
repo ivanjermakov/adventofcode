@@ -32,8 +32,6 @@ section .data
 section .text
     global _start
 
-extern printf
-
 _start:
     ; open file, eax is a fd
     mov eax, [open_id]

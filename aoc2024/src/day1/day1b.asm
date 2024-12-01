@@ -30,8 +30,6 @@ section .data
 section .text
     global _start
 
-extern printf
-
 _start:
     ; open file, eax is a fd
     mov eax, [open_id]
@@ -95,9 +93,6 @@ _start:
         call count
         imul eax, [n]
         add [result], eax
-; mov ecx, 0
-; mov edx, eax
-; call print
 
         inc dword [i]
         jmp sum_loop
