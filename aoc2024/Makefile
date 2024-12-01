@@ -4,4 +4,4 @@ day1a_build:
 	ld build/day1/day1a.o -o build/day1/day1a
 
 day1a_run: day1a_build
-	strace build/day1/day1a
+	build/day1/day1a | od -An -tu4 | tr -d ' '
