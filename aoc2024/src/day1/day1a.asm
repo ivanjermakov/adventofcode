@@ -112,12 +112,17 @@ _start:
         mov ebx, [a2 + 4 * eax]
         mov [n2], ebx
 
+        mov eax, [n]
+        mov ebx, [n2]
+        call abs_diff
+        add [result], eax
+
         inc dword [i]
         jmp sum_loop
 
     print_res:
-        mov ecx, result
-        mov edx, 4
+        mov ecx, 0
+        mov edx, [result]
         call print
 
     call exit
@@ -208,3 +213,12 @@ exit:
     int 0x80
     ret
 
+
+abs_diff:
+    sub eax, ebx
+    js negate_result
+    ret
+
+    negate_result:
+        neg eax
+        ret
