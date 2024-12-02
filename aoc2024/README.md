@@ -2,10 +2,10 @@
 
 ## Progress
 
-Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Execution time
+Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Execution time (part 1 + part 2)
 --- | ---    | ---                 | ---    | ---                          | ---
 1   | A      | [x86 Assembly][asm] | ✅     | 12h + 1h                     | 5ms + 2ms
-2   | B      | [BQN][bqn]          | 🕙     |                              |
+2   | B      | [BQN][bqn]          | ✅     | 4h + 2h                      | 5ms + 10ms
 3   | C      | [Clojure][clojure]  | 🕙     |                              |
 4   | D      |                     | 🕙     |                              |
 5   | E      |                     | 🕙     |                              |
