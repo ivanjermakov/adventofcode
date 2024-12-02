@@ -16,3 +16,6 @@ day1b_run: day1b_build
 
 day2a_run:
 	bqn -f src/day2/day2a.bqn
+
+day2b_run:
+	bqn -f src/day2/day2b.bqn
