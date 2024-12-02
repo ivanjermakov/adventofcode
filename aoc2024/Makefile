@@ -13,3 +13,6 @@ day1b_build:
 
 day1b_run: day1b_build
 	build/day1/day1b | od -An -tu4 | tr -d ' '
+
+day2a_run:
+	bqn -f src/day2/day2a.bqn
