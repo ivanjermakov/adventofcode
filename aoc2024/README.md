@@ -6,7 +6,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 --- | ---    | ---                 | ---    | ---                          | ---
 1   | A      | [x86 Assembly][asm] | ✅     | 12h + 1h                     | 5ms + 2ms
 2   | B      | [BQN][bqn]          | ✅     | 4h + 2h                      | 5ms + 10ms
-3   | C      | [Clojure][clojure]  | 🕙     |                              |
+3   | C      | [Clojure][clojure]  | ✅     | 2h + 0.5h                    | No idea how to measure, startup time is 1500ms
 4   | D      |                     | 🕙     |                              |
 5   | E      |                     | 🕙     |                              |
 6   | F      |                     | 🕙     |                              |
