@@ -19,3 +19,9 @@ day2a_run:
 
 day2b_run:
 	bqn -f src/day2/day2b.bqn
+
+day3a_run:
+	clj -X day3.day3a/main
+
+day3b_run:
+	clj -X day3.day3b/main
