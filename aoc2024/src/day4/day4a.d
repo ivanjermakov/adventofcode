@@ -41,8 +41,12 @@ int countMatches(dchar[][] grid) {
     int count = 0;
     for (int y = 0; y < grid.length; y++) {
         for (int x = 0; x < grid[y].length; x++) {
+            auto pos = Pos(x, y);
+            // optimization: we don't care about the rest if origin is != X
+            auto originC = at(grid, pos);
+            if (originC.isNull || originC.get != 'X') continue;
             foreach(d; directions) {
-                auto w = wordAt(grid, Pos(x, y), d);
+                auto w = wordAt(grid, pos, d);
                 if (w == "XMAS") count++;
             }
         }
