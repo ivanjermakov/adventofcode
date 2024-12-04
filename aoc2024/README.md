@@ -7,7 +7,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 1   | A      | [x86 Assembly][asm] | ✅     | 12h + 1h                     | 5ms + 2ms
 2   | B      | [BQN][bqn]          | ✅     | 4h + 2h                      | 5ms + 10ms
 3   | C      | [Clojure][clojure]  | ✅     | 2h + 0.5h                    | No idea how to measure, startup time is 1500ms
-4   | D      |                     | 🕙     |                              |
+4   | D      | [D][d]              | ✅     | 2h + 0.5h                    | 15ms + 5ms
 5   | E      |                     | 🕙     |                              |
 6   | F      |                     | 🕙     |                              |
 7   | G      | [Gleam][gleam]      | 🕙     |                              |
@@ -37,6 +37,7 @@ List of languages: https://rosettacode.org/wiki/Category:Programming_Languages
 [asm]: https://rosettacode.org/wiki/Category:X86_Assembly
 [bqn]: https://rosettacode.org/wiki/Category:BQN
 [clojure]: https://rosettacode.org/wiki/Category:Clojure
+[d]: https://rosettacode.org/wiki/Category:D
 [gleam]: https://rosettacode.org/wiki/Category:Gleam
 [haskell]: https://rosettacode.org/wiki/Category:Haskell
 [lisp]: https://rosettacode.org/wiki/Category:Lisp
