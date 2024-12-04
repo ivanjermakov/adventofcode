@@ -25,3 +25,17 @@ day3a_run:
 
 day3b_run:
 	clj -X day3.day3b/main
+
+day4a_build:
+	mkdir -p build/day4
+	dmd -of=build/day4/day4a src/day4/day4a.d
+
+day4a_run: day4a_build
+	build/day4/day4a
+
+day4b_build:
+	mkdir -p build/day4
+	dmd -of=build/day4/day4b src/day4/day4b.d
+
+day4b_run: day4b_build
+	build/day4/day4b
