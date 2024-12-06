@@ -1,11 +1,13 @@
-#include "stdio.h"
-#include "stdbool.h"
-#include "limits.h"
-#include "string.h"
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <stdbool.h>
+#include <limits.h>
+#include <string.h>
+#include <sys/mman.h>
 
 #define N 130
 
-char input[N * (N + 1)];
 bool obstacles[N][N];
 
 struct Pos {
@@ -21,12 +23,12 @@ bool is_obstacle(size_t x, size_t y) {
 }
 
 int main() {
-    memset(input, false, sizeof(input));
-    FILE* f = fopen("data/day6.txt", "r");
-    fseek(f, 0, SEEK_END);
-    long len = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    fread(&input, len, 1, f);
+    int f = open("data/day6.txt", O_RDONLY);
+    struct stat sb;
+    fstat(f, &sb);
+    size_t len = sb.st_size;
+    void* mapped = mmap(NULL, len, PROT_READ, MAP_PRIVATE, f, 0);
+    char* input = (char*) mapped;
 
     size_t x = 0;
     size_t y = 0;
