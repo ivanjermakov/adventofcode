@@ -53,3 +53,10 @@ day5b_build:
 
 day5b_run: day5b_build
 	erl -pa build/day5 -noshell -s day5b main
+
+day6a_build:
+	mkdir -p build/day6
+	gcc src/day6/day6a.c -o build/day6/day6a
+
+day6a_run: day6a_build
+	build/day6/day6a
