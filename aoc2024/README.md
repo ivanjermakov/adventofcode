@@ -8,7 +8,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 2   | B      | [BQN][bqn]          | ✅     | 4h + 2h                      | 5ms + 10ms
 3   | C      | [Clojure][clojure]  | ✅     | 2h + 0.5h                    | No idea how to measure, startup time is 1500ms
 4   | D      | [D][d]              | ✅     | 2h + 0.5h                    | 15ms + 5ms
-5   | E      |                     | 🕙     |                              |
+5   | E      | [Erlang][erlang]    | ✅     | 4h + 0.5h                    | 188ms + 190ms
 6   | F      |                     | 🕙     |                              |
 7   | G      | [Gleam][gleam]      | 🕙     |                              |
 8   | H      | [Haskell][haskell]  | 🕙     |                              |

@@ -45,11 +45,11 @@ day5a_build:
 	erlc -o build/day5/ src/day5/day5a.erl
 
 day5a_run: day5a_build
-	erl -pa build/day5 -noshell -s day5a main -s init stop
+	erl -pa build/day5 -noshell -s day5a main
 
 day5b_build:
 	mkdir -p build/day5
 	erlc -o build/day5/ src/day5/day5b.erl
 
 day5b_run: day5b_build
-	erl -pa build/day5 -noshell -s day5b main -s init stop
+	erl -pa build/day5 -noshell -s day5b main

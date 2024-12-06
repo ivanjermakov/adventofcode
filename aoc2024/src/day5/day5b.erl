@@ -14,7 +14,7 @@ parse(Input) ->
     [RulesStr, PagesStr] = string:split(Input, "\n\n"),
     {Rules, PagesList} = {string:split(RulesStr, "\n", all), string:split(PagesStr, "\n", all)},
     {
-        Rules,
+        sets:from_list(Rules),
         lists:map(
             fun(Pages) -> lists:map(
                 fun(N) -> list_to_integer(N) end,
@@ -28,7 +28,7 @@ parse(Input) ->
     }.
 
 invalid_sorted_pages(Pages, Rules) ->
-    Cmp = fun(A, B) -> lists:member(io_lib:format("~B|~B", [A, B]), Rules) end,
+    Cmp = fun(A, B) -> sets:is_element(io_lib:format("~B|~B", [A, B]), Rules) end,
     Sorted = lists:sort(Cmp, Pages),
     case Pages == Sorted of 
         true -> false;
