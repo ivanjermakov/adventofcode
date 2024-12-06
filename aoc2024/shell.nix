@@ -7,10 +7,13 @@ pkgs.mkShell {
         nasm
         # day 2
         cbqn
+        # day 3
         clojure
         clojure-lsp
-        # day 3
+        # day 4
         # broken installation on nix
         # dmd
+        # day 5
+        erlang
     ];
 }
