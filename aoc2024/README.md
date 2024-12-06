@@ -9,7 +9,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 3   | C      | [Clojure][clojure]  | ✅     | 2h + 0.5h                    | No idea how to measure, startup time is 1500ms
 4   | D      | [D][d]              | ✅     | 2h + 0.5h                    | 15ms + 5ms
 5   | E      | [Erlang][erlang]    | ✅     | 4h + 0.5h                    | 188ms + 190ms
-6   | F      | [C][c]              | 🕙     |                              |
+6   | F      | [C][c]              | ✅     | 2h + 1h                      | 12ms + 195ms
 7   | G      | [Gleam][gleam]      | 🕙     |                              |
 8   | H      | [Haskell][haskell]  | 🕙     |                              |
 9   | I      |                     | 🕙     |                              |
