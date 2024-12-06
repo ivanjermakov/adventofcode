@@ -75,14 +75,48 @@ int main() {
         }
     }
 
-    size_t result = 0;
-    for (size_t y = 0; y < N; y++) {
-        for (size_t x = 0; x < N; x++) {
-            if (obstacles[y][x]) continue;
-            obstacles[y][x] = true;
-            if (looping(guard)) result++;
-            obstacles[y][x] = false;
+    struct Pos fguard = guard;
+    struct Pos visited[N * N];
+    size_t visited_len = 0;
+    visited[0] = (struct Pos){.x = fguard.x, .y = fguard.y };
+    while (true) {
+        if (fguard.x >= N || fguard.x < 0 || fguard.y >= N || fguard.y < 0) break;
+
+        size_t i = 0;
+        while (i <= visited_len) {
+            if (i == visited_len) {
+                visited[i] = (struct Pos){.x = fguard.x, .y = fguard.y };
+                visited_len++;
+                break;
+            }
+            if (visited[i].x == fguard.x && visited[i].y == fguard.y) {
+                break;
+            }
+            i++;
         }
+
+        if (
+                (fguard.dir == 0 && is_obstacle(fguard.x, fguard.y - 1)) ||
+                (fguard.dir == 1 && is_obstacle(fguard.x + 1, fguard.y)) ||
+                (fguard.dir == 2 && is_obstacle(fguard.x, fguard.y + 1)) ||
+                (fguard.dir == 3 && is_obstacle(fguard.x - 1, fguard.y))
+        ) {
+            fguard.dir = (fguard.dir + 1) % 4;
+            continue;
+        }
+        if (fguard.dir == 0) fguard.y--;
+        if (fguard.dir == 1) fguard.x++;
+        if (fguard.dir == 2) fguard.y++;
+        if (fguard.dir == 3) fguard.x--;
+    }
+
+    size_t result = 0;
+    for (size_t i = 0; i < visited_len; i++) {
+        size_t x = visited[i].x;
+        size_t y = visited[i].y;
+        obstacles[y][x] = true;
+        if (looping(guard)) result++;
+        obstacles[y][x] = false;
     }
 
     printf("%d\n", result);
