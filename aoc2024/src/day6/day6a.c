@@ -39,6 +39,7 @@ int main() {
         } else if (input[i] == '^') {
             guard.x = x;
             guard.y = y;
+            x++;
         } else {
             if (input[i] == '#') {
                 obstacles[y][x] = true;

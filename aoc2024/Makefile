@@ -56,7 +56,14 @@ day5b_run: day5b_build
 
 day6a_build:
 	mkdir -p build/day6
-	gcc src/day6/day6a.c -o build/day6/day6a
+	gcc -O3 src/day6/day6a.c -o build/day6/day6a
 
 day6a_run: day6a_build
 	build/day6/day6a
+
+day6b_build:
+	mkdir -p build/day6
+	gcc -O3 src/day6/day6b.c -o build/day6/day6b
+
+day6b_run: day6b_build
+	build/day6/day6b
