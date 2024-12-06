@@ -7,6 +7,7 @@
 #include <sys/mman.h>
 
 #define N 130
+size_t loop_threshold = N * N / 2;
 
 bool obstacles[N][N];
 
@@ -42,7 +43,7 @@ bool looping(struct Pos guard) {
         if (guard.dir == 3) guard.x--;
 
         steps++;
-        if (steps > N * N) return true;
+        if (steps > loop_threshold) return true;
     }
 }
 
@@ -111,7 +112,7 @@ int main() {
     }
 
     size_t result = 0;
-    for (size_t i = 0; i < visited_len; i++) {
+    for (size_t i = 1; i < visited_len; i++) {
         size_t x = visited[i].x;
         size_t y = visited[i].y;
         obstacles[y][x] = true;
