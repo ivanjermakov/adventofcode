@@ -38,6 +38,7 @@ List of languages: https://rosettacode.org/wiki/Category:Programming_Languages
 [bqn]: https://rosettacode.org/wiki/Category:BQN
 [clojure]: https://rosettacode.org/wiki/Category:Clojure
 [d]: https://rosettacode.org/wiki/Category:D
+[erlang]: https://rosettacode.org/wiki/Category:Erlang
 [gleam]: https://rosettacode.org/wiki/Category:Gleam
 [haskell]: https://rosettacode.org/wiki/Category:Haskell
 [lisp]: https://rosettacode.org/wiki/Category:Lisp
