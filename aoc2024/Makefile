@@ -67,3 +67,9 @@ day6b_build:
 
 day6b_run: day6b_build
 	build/day6/day6b
+
+day7a_run:
+	(cd src/day7/day7a && gleam run)
+
+day7b_run:
+	(cd src/day7/day7b && gleam run)
