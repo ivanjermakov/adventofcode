@@ -29,8 +29,10 @@ fn test_equation(test_value: Int, operands: List(Int), acc: Int) -> Bool {
 }
 
 fn concat(a: Int, b: Int) -> Int {
-  let assert Ok(res) = int.to_string(a) |> string.append(int.to_string(b)) |> int.parse()
-  res
+  int.to_string(a)
+  |> string.append(b |> int.to_string)
+  |> int.parse()
+  |> result.unwrap(0)
 }
 
 pub fn main() {
