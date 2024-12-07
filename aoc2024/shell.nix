@@ -15,5 +15,8 @@ pkgs.mkShell {
         # dmd
         # day 5
         erlang
+        # day 6
+        # day 7
+        gleam
     ];
 }
