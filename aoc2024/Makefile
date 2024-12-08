@@ -81,3 +81,10 @@ day8a_build:
 day8a_run: day8a_build
 	build/day8/day8a
 
+day8b_build:
+	mkdir -p build/day8
+	ghc -o build/day8/day8b -outputdir build/day8 src/day8/day8b.hs
+
+day8b_run: day8b_build
+	build/day8/day8b
+

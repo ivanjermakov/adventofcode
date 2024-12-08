@@ -8,14 +8,12 @@ solve :: String -> Int
 solve input = length . nub . antins . groups . locate $ g
   where
     g = grid input
-    srt (a, _) (b, _) = compare a b
+    grid = filter (not . null) . lines
     groups = map (map snd) . groupBy (on (==) fst) . sortBy (comparing fst)
-    n = length g
+    antins = concat . concatMap (map groupAntinodes . choose 2)
+    groupAntinodes = filter inBounds . \[a, b] -> antinodes (n `div` 2) a b
     inBounds (i, j) = i >= 0 && i < n && j >= 0 && j < n
-    antins = concatMap (concatMap (filter inBounds . \[a, b] -> antinodes a b) . choose 2)
-
-grid :: String -> [[Char]]
-grid = filter (not . null) . lines
+    n = length g
 
 locate :: [[Char]] -> [(Char, Pos)]
 locate g =
@@ -27,8 +25,11 @@ locate g =
     r = [0 .. n - 1]
     charAt i j = (!! j) . (!! i)
 
-antinodes :: Pos -> Pos -> [Pos]
-antinodes (ia, ja) (ib, jb) = [(ia - id, ja - jd), (ib + id, jb + jd)]
+antinodes :: Int -> Pos -> Pos -> [Pos]
+antinodes count (ia, ja) (ib, jb) =
+  concatMap
+    (\c -> [(ia - c * id, ja - c * jd), (ib + c * id, jb + c * jd)])
+    [0 .. count - 1]
   where
     (id, jd) = (ib - ia, jb - ja)
 
