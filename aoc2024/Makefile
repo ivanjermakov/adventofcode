@@ -73,3 +73,11 @@ day7a_run:
 
 day7b_run:
 	cd src/day7/day7b && gleam run
+
+day8a_build:
+	mkdir -p build/day8
+	ghc -o build/day8/day8a -outputdir build/day8 src/day8/day8a.hs
+
+day8a_run: day8a_build
+	build/day8/day8a
+

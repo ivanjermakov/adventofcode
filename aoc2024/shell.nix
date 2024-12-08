@@ -18,5 +18,7 @@ pkgs.mkShell {
         # day 6
         # day 7
         gleam
+        # day 8
+        ghc
     ];
 }
