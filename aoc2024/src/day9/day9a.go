@@ -59,7 +59,6 @@ func Defragment(files []File) []File {
 				// perfect fit
 				files[i].Index = last.Index
 				files[i].Value = moveSize
-				// fmt.Println("perfect", files)
 				i++
 				j--
 			} else if keepSize > 0 {
@@ -67,13 +66,11 @@ func Defragment(files []File) []File {
 				files[i].Index = last.Index
 				files[i].Value = moveSize
 				files[j].Value = keepSize
-				// fmt.Println("partial move", files)
 				i++
 			} else if spaceLeft > 0 {
 				// some space left free
 				files[i].Value = spaceLeft
-				slices.Insert(files, i, last)
-				// fmt.Println("left space", files)
+				files = slices.Insert(files, i, last)
 				i++
 			} else {
 				log.Fatalf("unreachable")
