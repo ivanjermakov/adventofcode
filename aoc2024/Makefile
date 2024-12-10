@@ -88,3 +88,14 @@ day8b_build:
 day8b_run: day8b_build
 	build/day8/day8b
 
+day9a_build:
+	go build -o build/day9/day9a src/day9/day9a.go
+
+day9a_run: day9a_build
+	build/day9/day9a
+
+day9b_build:
+	go build -o build/day9/day9b src/day9/day9b.go
+
+day9b_run: day9b_build
+	build/day9/day9b
