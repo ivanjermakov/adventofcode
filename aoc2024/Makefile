@@ -99,3 +99,9 @@ day9b_build:
 
 day9b_run: day9b_build
 	build/day9/day9b
+
+day10a_run:
+	cat data/day10.txt | jq -Rs -f src/day10/day10a.jq
+
+day10b_run:
+	cat data/day10.txt | jq -Rs -f src/day10/day10b.jq

@@ -22,5 +22,7 @@ pkgs.mkShell {
         ghc
         # day 9
         go
+        # day 10
+        jq
     ];
 }
