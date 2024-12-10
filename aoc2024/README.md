@@ -13,7 +13,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 7   | G      | [Gleam][gleam]      | ✅     | 3h + 0.1h                    | 630ms + 2790ms
 8   | H      | [Haskell][haskell]  | ✅     | 2h + 0.2h                    | 22ms + 28ms
 9   | ~~I~~  | [Go][go]            | ✅     | 2.5h + 1h                    | 17ms + 79ms
-10  | J      |                     | 🕙     |                              |
+10  | J      | [Jq][jq]            | ✅     | 6h + 0h                      | 332ms + 316ms
 11  | K      |                     | 🕙     |                              |
 12  | L      | [Common lisp][lisp] | 🕙     |                              |
 13  | M      |                     | 🕙     |                              |
@@ -43,6 +43,7 @@ List of languages: https://rosettacode.org/wiki/Category:Programming_Languages
 [gleam]: https://rosettacode.org/wiki/Category:Gleam
 [haskell]: https://rosettacode.org/wiki/Category:Haskell
 [go]: https://rosettacode.org/wiki/Category:Go
+[jq]: https://rosettacode.org/wiki/Category:Jq
 [lisp]: https://rosettacode.org/wiki/Category:Lisp
 [ocaml]: https://rosettacode.org/wiki/Category:OCaml
 [uiua]: https://rosettacode.org/wiki/Category:Uiua
