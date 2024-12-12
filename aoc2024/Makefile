@@ -111,3 +111,6 @@ day11_build:
 
 day11_run: day11_build
 	java -jar build/day11.jar
+
+day12a_run:
+	luajit src/day12/day12a.lua

@@ -25,5 +25,7 @@ pkgs.mkShell {
         jq
         # day 11
         kotlin
+        # day 12
+        luajit
     ];
 }
