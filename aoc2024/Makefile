@@ -105,3 +105,9 @@ day10a_run:
 
 day10b_run:
 	cat data/day10.txt | jq -Rs -f src/day10/day10b.jq
+
+day11_build:
+	kotlinc src/day11/day11.kt -include-runtime -d build/day11.jar
+
+day11_run: day11_build
+	java -jar build/day11.jar

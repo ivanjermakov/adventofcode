@@ -14,14 +14,14 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 8   | H      | [Haskell][haskell]  | ✅     | 2h + 0.2h                    | 22ms + 28ms
 9   | ~~I~~  | [Go][go]            | ✅     | 2.5h + 1h                    | 17ms + 79ms
 10  | J      | [Jq][jq]            | ✅     | 6h + 0h                      | 332ms + 316ms
-11  | K      |                     | 🕙     |                              |
-12  | L      | [Common lisp][lisp] | 🕙     |                              |
+11  | K      | [Kotlin][kotlin]    | ✅     | 4h + 3h                      | 128ms + 211ms
+12  | L      |                     | 🕙     |                              |
 13  | M      |                     | 🕙     |                              |
 14  | N      |                     | 🕙     |                              |
 15  | O      | [OCaml][ocaml]      | 🕙     |                              |
 16  | P      |                     | 🕙     |                              |
 17  | Q      |                     | 🕙     |                              |
-18  | R      |                     | 🕙     |                              |
+18  | R      | [Racket][racket]    | 🕙     |                              |
 19  | S      |                     | 🕙     |                              |
 20  | T      |                     | 🕙     |                              |
 21  | U      | [Uiua][uiua]        | 🕙     |                              |
@@ -44,6 +44,7 @@ List of languages: https://rosettacode.org/wiki/Category:Programming_Languages
 [haskell]: https://rosettacode.org/wiki/Category:Haskell
 [go]: https://rosettacode.org/wiki/Category:Go
 [jq]: https://rosettacode.org/wiki/Category:Jq
-[lisp]: https://rosettacode.org/wiki/Category:Lisp
+[kotlin]: https://rosettacode.org/wiki/Category:Kotlin
 [ocaml]: https://rosettacode.org/wiki/Category:OCaml
+[racket]: https://rosettacode.org/wiki/Category:Racket
 [uiua]: https://rosettacode.org/wiki/Category:Uiua

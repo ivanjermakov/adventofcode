@@ -9,7 +9,6 @@ pkgs.mkShell {
         cbqn
         # day 3
         clojure
-        clojure-lsp
         # day 4
         # broken installation on nix
         # dmd
@@ -24,5 +23,7 @@ pkgs.mkShell {
         go
         # day 10
         jq
+        # day 11
+        kotlin
     ];
 }
