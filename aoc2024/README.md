@@ -15,7 +15,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 9   | ~~I~~  | [Go][go]            | ✅     | 2.5h + 1h                    | 17ms + 79ms
 10  | J      | [Jq][jq]            | ✅     | 6h + 0h                      | 332ms + 316ms
 11  | K      | [Kotlin][kotlin]    | ✅     | 4h + 3h                      | 128ms + 211ms
-12  | L      | [Lua][lua]          | 🕙     |                              |
+12  | L      | [Lua][lua]          | ✅     | 1h + 1h                      | 49ms + 54ms
 13  | M      |                     | 🕙     |                              |
 14  | N      |                     | 🕙     |                              |
 15  | O      | [OCaml][ocaml]      | 🕙     |                              |

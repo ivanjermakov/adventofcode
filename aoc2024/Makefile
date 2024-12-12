@@ -114,3 +114,6 @@ day11_run: day11_build
 
 day12a_run:
 	luajit src/day12/day12a.lua
+
+day12b_run:
+	luajit src/day12/day12b.lua
