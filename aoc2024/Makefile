@@ -117,3 +117,9 @@ day12a_run:
 
 day12b_run:
 	luajit src/day12/day12b.lua
+
+day13a_build:
+	javac -d build src/day13/Day13a.java
+
+day13a_run: day13a_build
+	java -cp build Day13a

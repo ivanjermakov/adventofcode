@@ -27,5 +27,7 @@ pkgs.mkShell {
         kotlin
         # day 12
         luajit
+        # day 13
+        jdk
     ];
 }

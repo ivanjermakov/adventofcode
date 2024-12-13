@@ -16,7 +16,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 10  | J      | [Jq][jq]            | ✅     | 6h + 0h                      | 332ms + 316ms
 11  | K      | [Kotlin][kotlin]    | ✅     | 4h + 3h                      | 128ms + 211ms
 12  | L      | [Lua][lua]          | ✅     | 1h + 1h                      | 49ms + 54ms
-13  | M      |                     | 🕙     |                              |
+13  | ~~M~~  | [Java][java]        | 🕙     |                              |
 14  | N      |                     | 🕙     |                              |
 15  | O      | [OCaml][ocaml]      | 🕙     |                              |
 16  | P      |                     | 🕙     |                              |
@@ -46,6 +46,7 @@ List of languages: https://rosettacode.org/wiki/Category:Programming_Languages
 [jq]: https://rosettacode.org/wiki/Category:Jq
 [kotlin]: https://rosettacode.org/wiki/Category:Kotlin
 [lua]: https://rosettacode.org/wiki/Category:Lua
+[java]: https://rosettacode.org/wiki/Category:Java
 [ocaml]: https://rosettacode.org/wiki/Category:OCaml
 [racket]: https://rosettacode.org/wiki/Category:Racket
 [uiua]: https://rosettacode.org/wiki/Category:Uiua
