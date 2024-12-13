@@ -123,3 +123,9 @@ day13a_build:
 
 day13a_run: day13a_build
 	java -cp build Day13a
+
+day13b_build:
+	javac -d build src/day13/Day13b.java
+
+day13b_run: day13b_build
+	java -cp build Day13b
