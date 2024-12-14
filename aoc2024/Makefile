@@ -135,3 +135,9 @@ day14a_build:
 
 day14a_run: day14a_build
 	build/day14a
+
+day14b_build:
+	nim compile -d:release -o:build/day14b src/day14/day14b.nim
+
+day14b_run: day14b_build
+	build/day14b
