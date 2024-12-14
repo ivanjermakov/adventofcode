@@ -1,6 +1,7 @@
 import os
 import sequtils
 import strutils
+import algorithm
 
 type Vec2 = object
     x: int
@@ -26,23 +27,18 @@ func move(robot: Robot, moves: int): Robot =
     )
 
 proc filterPattern(robots: seq[Robot]): bool =
-    for i in 0..gridSize.y:
-        var start = -1
-        for j in 0..gridSize.x:
-            if any(robots, proc(r: Robot): bool = r.pos.x == j and r.pos.y == i):
-                if start == -1:
-                    start = j
-            else:
-                if start != -1 and j - start > 30:
-                    return true
-                start = -1
-    return false
+    var xs: array[gridSize.x, int]
+    var ys: array[gridSize.y, int]
+    for _, robot in robots:
+        xs[robot.pos.x] += 1
+        ys[robot.pos.y] += 1
+    return any(xs, func(n: int): bool = n > 20) and any(ys, func(n: int): bool = n > 20)
 
 proc gridToString(robots: seq[Robot]): string =
     var res: string = ""
     for i in 0..gridSize.x:
         for j in 0..gridSize.y:
-            if any(robots, proc(r: Robot): bool = r.pos.x == i and r.pos.y == j):
+            if any(robots, func(r: Robot): bool = r.pos.x == i and r.pos.y == j):
                 res &= '#'
             else:
                 res &= ' '
