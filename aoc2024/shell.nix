@@ -29,5 +29,7 @@ pkgs.mkShell {
         luajit
         # day 13
         jdk
+        # day 14
+        nim
     ];
 }

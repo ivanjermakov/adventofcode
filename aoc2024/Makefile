@@ -129,3 +129,9 @@ day13b_build:
 
 day13b_run: day13b_build
 	java -cp build Day13b
+
+day14a_build:
+	nim compile -o:build/day14a src/day14/day14a.nim
+
+day14a_run: day14a_build
+	build/day14a
