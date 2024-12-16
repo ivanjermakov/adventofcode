@@ -31,5 +31,8 @@ pkgs.mkShell {
         jdk
         # day 14
         nim
+        # day 15
+        ocaml
+        ocamlPackages.utop
     ];
 }
