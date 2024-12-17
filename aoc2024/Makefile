@@ -148,3 +148,9 @@ day15a_build:
 day15a_run: day15a_build
 	build/day15a
 
+day15b_build:
+	ocamlopt str.cmxa -I +str -o build/day15b src/day15/day15b.ml
+
+day15b_run: day15b_build
+	build/day15b
+
