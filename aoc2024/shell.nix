@@ -36,5 +36,7 @@ pkgs.mkShell {
         ocamlPackages.utop
         # day 16
         python39
+        # day 17
+        rustc
     ];
 }

@@ -159,3 +159,10 @@ day16a_run:
 
 day16b_run:
 	python3 src/day16/day16b.py
+
+day17a_build:
+	rustc --out-dir build src/day17/day17a.rs
+
+day17a_run: day17a_build
+	build/day17a
+
