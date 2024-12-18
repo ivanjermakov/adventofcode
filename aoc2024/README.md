@@ -18,7 +18,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 12  | L      | [Lua][lua]          | ✅     | 1h + 1h                      | 49ms + 54ms
 13  | ~~M~~  | [Java][java]        | ✅     | 0.5h + 1h                    | 145ms + 127ms
 14  | N      | [Nim][nim]          | ✅     | 2h + 2h                      | 2ms + 72ms
-15  | O      | [OCaml][ocaml]      | 🕙     |                              |
+15  | O      | [OCaml][ocaml]      | ✅     | 6h + 14h                     | 1090ms + 2250ms
 16  | P      |                     | 🕙     |                              |
 17  | Q      |                     | 🕙     |                              |
 18  | R      | [Racket][racket]    | 🕙     |                              |
