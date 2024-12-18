@@ -166,3 +166,8 @@ day17a_build:
 day17a_run: day17a_build
 	src/day17/day17a/target/release/day17a
 
+day17b_build:
+	cd src/day17/day17b && cargo build --release 
+
+day17b_run: day17b_build
+	src/day17/day17b/target/release/day17b
