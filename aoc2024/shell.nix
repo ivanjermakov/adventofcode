@@ -36,5 +36,6 @@ pkgs.mkShell {
         ocamlPackages.utop
         # day 16
         python39
+        pypy3
     ];
 }
