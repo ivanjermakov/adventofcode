@@ -34,5 +34,7 @@ pkgs.mkShell {
         # day 15
         ocaml
         ocamlPackages.utop
+        # day 16
+        python39
     ];
 }

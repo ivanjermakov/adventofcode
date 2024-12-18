@@ -19,7 +19,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 13  | ~~M~~  | [Java][java]        | ✅     | 0.5h + 1h                    | 145ms + 127ms
 14  | N      | [Nim][nim]          | ✅     | 2h + 2h                      | 2ms + 72ms
 15  | O      | [OCaml][ocaml]      | ✅     | 6h + 14h                     | 1090ms + 2250ms
-16  | P      |                     | 🕙     |                              |
+16  | P      | [Python][python]    | 🕙     |                              |
 17  | Q      |                     | 🕙     |                              |
 18  | R      | [Racket][racket]    | 🕙     |                              |
 19  | S      |                     | 🕙     |                              |
@@ -49,5 +49,6 @@ List of languages: https://rosettacode.org/wiki/Category:Programming_Languages
 [java]: https://rosettacode.org/wiki/Category:Java
 [nim]: https://rosettacode.org/wiki/Category:Nim
 [ocaml]: https://rosettacode.org/wiki/Category:OCaml
+[python]: https://rosettacode.org/wiki/Category:Python
 [racket]: https://rosettacode.org/wiki/Category:Racket
 [uiua]: https://rosettacode.org/wiki/Category:Uiua
