@@ -26,10 +26,10 @@ dist[start] = 0
 paths[start].append(start)
 while q:
     udist, upos, udir, upath = heapq.heappop(q)
-    if udist > dist[upos] + 1000:
-        continue
     if upos == target:
         break
+    if udist > dist[upos] + 1000:
+        continue
     for vdir, doff in enumerate([(-1, 0), (0, 1), (1, 0), (0, -1)]):
         if vdir != (udir + 2) % 4:
             vpos = (upos[0] + doff[0], upos[1] + doff[1])

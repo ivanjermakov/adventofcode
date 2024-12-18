@@ -19,7 +19,7 @@ Day | Letter | Language            | Status | Time spent (part 1 + part 2) | Exe
 13  | ~~M~~  | [Java][java]        | ✅     | 0.5h + 1h                    | 145ms + 127ms
 14  | N      | [Nim][nim]          | ✅     | 2h + 2h                      | 2ms + 72ms
 15  | O      | [OCaml][ocaml]      | ✅     | 6h + 14h                     | 1090ms + 2250ms
-16  | P      | [Python][python]    | ✅     | 0.5h + 0.5h                  | 154ms + 8796ms
+16  | P      | [Python][python]    | ✅     | 0.5h + 0.5h                  | 66ms + 6376ms
 17  | Q      |                     | 🕙     |                              |
 18  | R      | [Racket][racket]    | 🕙     |                              |
 19  | S      |                     | 🕙     |                              |

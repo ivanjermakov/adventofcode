@@ -155,7 +155,7 @@ day15b_run: day15b_build
 	build/day15b
 
 day16a_run:
-	pypy3 src/day16/day16a.py
+	python3 src/day16/day16a.py
 
 day16b_run:
-	pypy3 src/day16/day16b.py
+	python3 src/day16/day16b.py
