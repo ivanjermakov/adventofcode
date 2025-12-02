@@ -26,17 +26,26 @@ pub fn digits(n: u64) u8 {
     return d;
 }
 
-pub fn slice(n: u64, start: u8, end: u8, ds: u8) u64 {
-    const left: u64 = ds - end;
-    const len: u64 = end - start;
-    return @mod(@divFloor(n, powers[left]), powers[len]);
-}
-
 fn isInvalid(n: u64) bool {
     const ds = digits(n);
-    if (ds % 2 != 0) return false;
-    const hl = @divExact(ds, 2);
-    return slice(n, 0, hl, ds) == slice(n, hl, ds, ds);
+    if (ds > 10) std.debug.assert(false);
+    if (ds == 10) return n % 100_001 == 0;
+    if (ds == 8) return n % 10_001 == 0;
+    if (ds == 6) return n % 1_001 == 0;
+    if (ds == 4) return n % 101 == 0;
+    if (ds == 2) return n % 11 == 0;
+    return false;
+}
+
+test "isInvalid" {
+    try std.testing.expectEqual(false, isInvalid(10));
+    try std.testing.expectEqual(true, isInvalid(11));
+    try std.testing.expectEqual(false, isInvalid(20));
+    try std.testing.expectEqual(true, isInvalid(22));
+    try std.testing.expectEqual(false, isInvalid(9099));
+    try std.testing.expectEqual(true, isInvalid(9090));
+    try std.testing.expectEqual(false, isInvalid(1011));
+    try std.testing.expectEqual(true, isInvalid(1010));
 }
 
 test "day2a demo" {

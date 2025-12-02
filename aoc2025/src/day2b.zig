@@ -21,24 +21,17 @@ pub fn solve(input: []const u8) !usize {
 
 fn isInvalid(n: u64) bool {
     const ds = day2a.digits(n);
-    inline for (1..6) |pattern_len| {
-        if (ds % pattern_len == 0) {
-            const pattern_count: u8 = @intCast(@divExact(ds, pattern_len));
-            if (pattern_count > 1) {
-                const pattern = day2a.slice(n, 0, @intCast(pattern_len), ds);
-                if (matchesPattern(n, ds, pattern, pattern_len, pattern_count)) return true;
-            }
-        }
-    }
+    if (ds > 10) std.debug.assert(false);
+    if (ds == 10) return n % 100001 == 0 or n % 1111111111 == 0 or n % 101010101 == 0;
+    if (ds == 9) return n % 111111111 == 0 or n % 1001001 == 0;
+    if (ds == 8) return n % 10001 == 0 or n % 11111111 == 0 or n % 1010101 == 0;
+    if (ds == 7) return n % 1111111 == 0;
+    if (ds == 6) return n % 1001 == 0 or n % 111111 == 0 or n % 10101 == 0;
+    if (ds == 5) return n % 11111 == 0;
+    if (ds == 4) return n % 101 == 0 or n % 1111 == 0;
+    if (ds == 3) return n % 111 == 0;
+    if (ds == 2) return n % 11 == 0;
     return false;
-}
-
-fn matchesPattern(n: u64, ds: u8, pattern: u64, pattern_len: u8, pattern_count: u8) bool {
-    for (1..pattern_count) |pi| {
-        const target = day2a.slice(n, @intCast(pi * pattern_len), @intCast((pi + 1) * pattern_len), ds);
-        if (pattern != target) return false;
-    }
-    return true;
 }
 
 test "isInvalid" {
