@@ -19,18 +19,25 @@ pub fn solve(input: []const u8) !usize {
     return total;
 }
 
+const modulos = [_][]const u64{
+    &.{},
+    &.{},
+    &.{11},
+    &.{111},
+    &.{ 101, 1111 },
+    &.{11111},
+    &.{ 1001, 111111, 10101 },
+    &.{1111111},
+    &.{ 10001, 11111111, 1010101 },
+    &.{ 111111111, 1001001 },
+    &.{ 100001, 1111111111, 101010101 },
+};
+
 fn isInvalid(n: u64) bool {
     const ds = day2a.digits(n);
-    if (ds > 10) std.debug.assert(false);
-    if (ds == 10) return n % 100001 == 0 or n % 1111111111 == 0 or n % 101010101 == 0;
-    if (ds == 9) return n % 111111111 == 0 or n % 1001001 == 0;
-    if (ds == 8) return n % 10001 == 0 or n % 11111111 == 0 or n % 1010101 == 0;
-    if (ds == 7) return n % 1111111 == 0;
-    if (ds == 6) return n % 1001 == 0 or n % 111111 == 0 or n % 10101 == 0;
-    if (ds == 5) return n % 11111 == 0;
-    if (ds == 4) return n % 101 == 0 or n % 1111 == 0;
-    if (ds == 3) return n % 111 == 0;
-    if (ds == 2) return n % 11 == 0;
+    for (modulos[ds]) |m| {
+        if (n % m == 0) return true;
+    }
     return false;
 }
 

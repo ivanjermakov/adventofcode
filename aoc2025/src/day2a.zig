@@ -13,13 +13,7 @@ pub fn solve(input: []const u8) !usize {
         const to = try std.fmt.parseInt(u64, to_str, 10);
         if (from_str.len == to_str.len) {
             const m = modulo(@intCast(from_str.len)) orelse continue;
-            var n = from - @mod(from, m);
-            while (n <= to) {
-                if (n >= from) {
-                    total += n;
-                }
-                n += m;
-            }
+            total += sumRange(from, to, m);
         } else {
             for (from..to + 1) |i| {
                 if (isInvalid(i)) total += i;
@@ -50,6 +44,18 @@ fn isInvalid(n: u64) bool {
     const ds = digits(n);
     if (modulo(ds)) |m| return n % m == 0;
     return false;
+}
+
+fn sumRange(from: u64, to: u64, m: u64) u64 {
+    var total: u64 = 0;
+    var n = from - @mod(from, m);
+    while (n <= to) {
+        if (n >= from) {
+            total += n;
+        }
+        n += m;
+    }
+    return total;
 }
 
 test "isInvalid" {
