@@ -11,8 +11,19 @@ pub fn solve(input: []const u8) !usize {
         const from = try std.fmt.parseInt(u64, from_str, 10);
         const to_str = range_it.next().?;
         const to = try std.fmt.parseInt(u64, to_str, 10);
-        for (from..to + 1) |i| {
-            if (isInvalid(i)) total += i;
+        if (from_str.len == to_str.len) {
+            const m = modulo(@intCast(from_str.len)) orelse continue;
+            var n = from - @mod(from, m);
+            while (n <= to) {
+                if (n >= from) {
+                    total += n;
+                }
+                n += m;
+            }
+        } else {
+            for (from..to + 1) |i| {
+                if (isInvalid(i)) total += i;
+            }
         }
     }
     return total;
@@ -26,14 +37,18 @@ pub fn digits(n: u64) u8 {
     return d;
 }
 
+fn modulo(ds: u8) ?u64 {
+    if (ds == 10) return 100_001;
+    if (ds == 8) return 10_001;
+    if (ds == 6) return 1_001;
+    if (ds == 4) return 101;
+    if (ds == 2) return 11;
+    return null;
+}
+
 fn isInvalid(n: u64) bool {
     const ds = digits(n);
-    if (ds > 10) std.debug.assert(false);
-    if (ds == 10) return n % 100_001 == 0;
-    if (ds == 8) return n % 10_001 == 0;
-    if (ds == 6) return n % 1_001 == 0;
-    if (ds == 4) return n % 101 == 0;
-    if (ds == 2) return n % 11 == 0;
+    if (modulo(ds)) |m| return n % m == 0;
     return false;
 }
 
