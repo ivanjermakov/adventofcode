@@ -1,8 +1,19 @@
 const std = @import("std");
 
-pub fn solve(input: []const u8) !usize {
-    return solveModulos(input, &modulosHalf);
-}
+pub const powers = [_]u64{
+    1,
+    10,
+    100,
+    1000,
+    10000,
+    100000,
+    1000000,
+    10000000,
+    100000000,
+    1000000000,
+    10000000000,
+    100000000000,
+};
 
 const modulosHalf = [_][]const u64{
     &.{},
@@ -17,6 +28,10 @@ const modulosHalf = [_][]const u64{
     &.{},
     &.{100001},
 };
+
+pub fn solve(input: []const u8) !usize {
+    return solveModulos(input, &modulosHalf);
+}
 
 pub fn solveModulos(input: []const u8, modulos: []const []const u64) !usize {
     var alloc_buf: [1 << 14]u8 = undefined;
@@ -37,50 +52,19 @@ pub fn solveModulos(input: []const u8, modulos: []const []const u64) !usize {
             map.clearRetainingCapacity();
             const sub_from = @max(from, powers[len - 1]);
             const sub_to = @min(to, powers[len]);
-            for (modulos[len]) |ms| total += sumRange(sub_from, sub_to, ms, &map);
+            for (modulos[len]) |m| {
+                var n = sub_from - @mod(sub_from, m);
+                while (n <= sub_to) {
+                    if (n >= sub_from and !map.contains(n)) {
+                        total += n;
+                        map.put(n, {}) catch unreachable;
+                    }
+                    n += m;
+                }
+            }
         }
     }
     return total;
-}
-
-pub fn isInvalid(n: u64, modulos: []const []const u64) bool {
-    const ds = digits(n);
-    for (modulos[ds]) |m| {
-        if (n % m == 0) return true;
-    }
-    return false;
-}
-
-fn sumRange(from: u64, to: u64, m: u64, map: *std.AutoArrayHashMap(u64, void)) u64 {
-    var total: u64 = 0;
-    var n = from - @mod(from, m);
-    while (n <= to) {
-        if (n >= from and !map.contains(n)) {
-            total += n;
-            map.put(n, {}) catch unreachable;
-        }
-        n += m;
-    }
-    return total;
-}
-
-pub const powers = [_]u64{ 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 10000000000, 100000000000 };
-
-pub fn digits(n: u64) u8 {
-    var d: u8 = 1;
-    inline for (1..12) |e| d += @intFromBool(n >= powers[e]);
-    return d;
-}
-
-test "isInvalid" {
-    try std.testing.expectEqual(false, isInvalid(10, &modulosHalf));
-    try std.testing.expectEqual(true, isInvalid(11, &modulosHalf));
-    try std.testing.expectEqual(false, isInvalid(20, &modulosHalf));
-    try std.testing.expectEqual(true, isInvalid(22, &modulosHalf));
-    try std.testing.expectEqual(false, isInvalid(9099, &modulosHalf));
-    try std.testing.expectEqual(true, isInvalid(9090, &modulosHalf));
-    try std.testing.expectEqual(false, isInvalid(1011, &modulosHalf));
-    try std.testing.expectEqual(true, isInvalid(1010, &modulosHalf));
 }
 
 test "day2a demo" {

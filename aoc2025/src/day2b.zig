@@ -1,10 +1,6 @@
 const std = @import("std");
 const day2a = @import("day2a.zig");
 
-pub fn solve(input: []const u8) !usize {
-    return day2a.solveModulos(input, &modulosMulti);
-}
-
 const modulosMulti = [_][]const u64{
     &.{},
     &.{},
@@ -19,15 +15,8 @@ const modulosMulti = [_][]const u64{
     &.{ 100001, 1111111111, 101010101 },
 };
 
-test "isInvalid" {
-    try std.testing.expectEqual(false, day2a.isInvalid(10, &modulosMulti));
-    try std.testing.expectEqual(true, day2a.isInvalid(11, &modulosMulti));
-    try std.testing.expectEqual(false, day2a.isInvalid(20, &modulosMulti));
-    try std.testing.expectEqual(true, day2a.isInvalid(22, &modulosMulti));
-    try std.testing.expectEqual(false, day2a.isInvalid(990, &modulosMulti));
-    try std.testing.expectEqual(true, day2a.isInvalid(999, &modulosMulti));
-    try std.testing.expectEqual(false, day2a.isInvalid(1011, &modulosMulti));
-    try std.testing.expectEqual(true, day2a.isInvalid(1010, &modulosMulti));
+pub fn solve(input: []const u8) !usize {
+    return day2a.solveModulos(input, &modulosMulti);
 }
 
 test "day2b demo" {
