@@ -18,12 +18,24 @@ pub fn solve(input: []const u8) !usize {
     return total;
 }
 
-fn isInvalid(i: u64) bool {
-    var buf: [12]u8 = undefined;
-    const str = buf[0..std.fmt.printInt(&buf, i, 10, .lower, .{})];
-    if (str.len % 2 != 0) return false;
-    const hl = @divExact(str.len, 2);
-    return std.mem.eql(u8, str[0..hl], str[hl..]);
+fn isInvalid(n: u64) bool {
+    const ds = digits(n);
+    if (ds % 2 != 0) return false;
+    const hl = @divExact(ds, 2);
+    return split(n, 0, hl, ds) == split(n, hl, ds, ds);
+}
+
+fn digits(n: u64) u8 {
+    var d: u8 = 1;
+    inline for (1..12) |e| d += @intFromBool(n >= std.math.pow(u64, 10, e));
+    return d;
+}
+
+fn split(n: u64, start: u8, end: u8, ds: u8) u64 {
+    const powers = [_]u64{ 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 };
+    const left: u64 = ds - end;
+    const len: u64 = end - start;
+    return @mod(@divFloor(n, powers[left]), powers[len]);
 }
 
 test "day2a demo" {
