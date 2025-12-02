@@ -19,7 +19,7 @@ pub fn solve(input: []const u8) !usize {
 }
 
 fn isInvalid(i: u64) bool {
-    var buf: [32]u8 = undefined;
+    var buf: [12]u8 = undefined;
     const str = buf[0..std.fmt.printInt(&buf, i, 10, .lower, .{})];
     if (str.len % 2 != 0) return false;
     const hl = @divExact(str.len, 2);

@@ -19,9 +19,9 @@ pub fn solve(input: []const u8) !usize {
 }
 
 fn isInvalid(i: u64) bool {
-    var buf: [32]u8 = undefined;
+    var buf: [12]u8 = undefined;
     const str = buf[0..std.fmt.printInt(&buf, i, 10, .lower, .{})];
-    b: for (1..16) |pattern_len| {
+    b: for (1..6) |pattern_len| {
         if (str.len % pattern_len != 0) continue;
         const pattern_count = @divExact(str.len, pattern_len);
         if (pattern_count < 2) continue;
@@ -45,12 +45,12 @@ test "isInvalid" {
     try std.testing.expectEqual(true, isInvalid(1010));
 }
 
-test "day2a demo" {
+test "day2b demo" {
     const input = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
     try std.testing.expectEqual(4174379265, solve(input));
 }
 
-test "day2a" {
+test "day2b" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day2.txt", &buf);
     try std.testing.expectEqual(49046150754, solve(input));
