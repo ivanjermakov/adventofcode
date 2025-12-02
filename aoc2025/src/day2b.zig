@@ -18,20 +18,32 @@ pub fn solve(input: []const u8) !usize {
     return total;
 }
 
-fn isInvalid(i: u64) bool {
-    var buf: [12]u8 = undefined;
-    const str = buf[0..std.fmt.printInt(&buf, i, 10, .lower, .{})];
+fn isInvalid(n: u64) bool {
+    const ds = digits(n);
     b: for (1..6) |pattern_len| {
-        if (str.len % pattern_len != 0) continue;
-        const pattern_count = @divExact(str.len, pattern_len);
+        if (ds % pattern_len != 0) continue;
+        const pattern_count = @divExact(ds, pattern_len);
         if (pattern_count < 2) continue;
-        const pattern = str[0..pattern_len];
+        const pattern = slice(n, 0, @intCast(pattern_len), ds);
         for (1..pattern_count) |pi| {
-            if (!std.mem.eql(u8, pattern, str[pi * pattern_len .. (pi + 1) * pattern_len])) continue :b;
+            if (pattern != slice(n, @intCast(pi * pattern_len), @intCast((pi + 1) * pattern_len), ds)) continue :b;
         }
         return true;
     }
     return false;
+}
+
+fn digits(n: u64) u8 {
+    var d: u8 = 1;
+    inline for (1..12) |e| d += @intFromBool(n >= std.math.pow(u64, 10, e));
+    return d;
+}
+
+fn slice(n: u64, start: u8, end: u8, ds: u8) u64 {
+    const powers = [_]u64{ 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000 };
+    const left: u64 = ds - end;
+    const len: u64 = end - start;
+    return @mod(@divFloor(n, powers[left]), powers[len]);
 }
 
 test "isInvalid" {
