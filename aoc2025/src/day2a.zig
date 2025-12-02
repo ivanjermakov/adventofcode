@@ -1,6 +1,28 @@
 const std = @import("std");
 
 pub fn solve(input: []const u8) !usize {
+    return solveModulos(input, &modulosHalf);
+}
+
+const modulosHalf = [_][]const u64{
+    &.{},
+    &.{},
+    &.{11},
+    &.{},
+    &.{101},
+    &.{},
+    &.{1001},
+    &.{},
+    &.{10001},
+    &.{},
+    &.{100001},
+};
+
+pub fn solveModulos(input: []const u8, modulos: []const []const u64) !usize {
+    var alloc_buf: [1 << 14]u8 = undefined;
+    var alloc: std.heap.FixedBufferAllocator = .init(&alloc_buf);
+    var map: std.AutoArrayHashMap(u64, void) = .init(alloc.allocator());
+
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
     var it = std.mem.splitScalar(u8, in, ',');
     var total: u64 = 0;
@@ -11,14 +33,33 @@ pub fn solve(input: []const u8) !usize {
         const from = try std.fmt.parseInt(u64, from_str, 10);
         const to_str = range_it.next().?;
         const to = try std.fmt.parseInt(u64, to_str, 10);
-        if (from_str.len == to_str.len) {
-            const m = modulo(@intCast(from_str.len)) orelse continue;
-            total += sumRange(from, to, m);
-        } else {
-            for (from..to + 1) |i| {
-                if (isInvalid(i)) total += i;
-            }
+        for (from_str.len..to_str.len + 1) |len| {
+            map.clearRetainingCapacity();
+            const sub_from = @max(from, powers[len - 1]);
+            const sub_to = @min(to, powers[len]);
+            for (modulos[len]) |ms| total += sumRange(sub_from, sub_to, ms, &map);
         }
+    }
+    return total;
+}
+
+pub fn isInvalid(n: u64, modulos: []const []const u64) bool {
+    const ds = digits(n);
+    for (modulos[ds]) |m| {
+        if (n % m == 0) return true;
+    }
+    return false;
+}
+
+fn sumRange(from: u64, to: u64, m: u64, map: *std.AutoArrayHashMap(u64, void)) u64 {
+    var total: u64 = 0;
+    var n = from - @mod(from, m);
+    while (n <= to) {
+        if (n >= from and !map.contains(n)) {
+            total += n;
+            map.put(n, {}) catch unreachable;
+        }
+        n += m;
     }
     return total;
 }
@@ -31,42 +72,15 @@ pub fn digits(n: u64) u8 {
     return d;
 }
 
-fn modulo(ds: u8) ?u64 {
-    if (ds == 10) return 100_001;
-    if (ds == 8) return 10_001;
-    if (ds == 6) return 1_001;
-    if (ds == 4) return 101;
-    if (ds == 2) return 11;
-    return null;
-}
-
-fn isInvalid(n: u64) bool {
-    const ds = digits(n);
-    if (modulo(ds)) |m| return n % m == 0;
-    return false;
-}
-
-fn sumRange(from: u64, to: u64, m: u64) u64 {
-    var total: u64 = 0;
-    var n = from - @mod(from, m);
-    while (n <= to) {
-        if (n >= from) {
-            total += n;
-        }
-        n += m;
-    }
-    return total;
-}
-
 test "isInvalid" {
-    try std.testing.expectEqual(false, isInvalid(10));
-    try std.testing.expectEqual(true, isInvalid(11));
-    try std.testing.expectEqual(false, isInvalid(20));
-    try std.testing.expectEqual(true, isInvalid(22));
-    try std.testing.expectEqual(false, isInvalid(9099));
-    try std.testing.expectEqual(true, isInvalid(9090));
-    try std.testing.expectEqual(false, isInvalid(1011));
-    try std.testing.expectEqual(true, isInvalid(1010));
+    try std.testing.expectEqual(false, isInvalid(10, &modulosHalf));
+    try std.testing.expectEqual(true, isInvalid(11, &modulosHalf));
+    try std.testing.expectEqual(false, isInvalid(20, &modulosHalf));
+    try std.testing.expectEqual(true, isInvalid(22, &modulosHalf));
+    try std.testing.expectEqual(false, isInvalid(9099, &modulosHalf));
+    try std.testing.expectEqual(true, isInvalid(9090, &modulosHalf));
+    try std.testing.expectEqual(false, isInvalid(1011, &modulosHalf));
+    try std.testing.expectEqual(true, isInvalid(1010, &modulosHalf));
 }
 
 test "day2a demo" {
