@@ -1,6 +1,4 @@
 const std = @import("std");
-const day1a = @import("day1a.zig");
-const day1b = @import("day1b.zig");
 
 pub fn main() !void {
     const warmup = 10;

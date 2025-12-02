@@ -1,4 +1,5 @@
 const std = @import("std");
+const day2a = @import("day2a.zig");
 
 pub fn solve(input: []const u8) !usize {
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
@@ -19,31 +20,25 @@ pub fn solve(input: []const u8) !usize {
 }
 
 fn isInvalid(n: u64) bool {
-    const ds = digits(n);
-    b: for (1..6) |pattern_len| {
-        if (ds % pattern_len != 0) continue;
-        const pattern_count = @divExact(ds, pattern_len);
-        if (pattern_count < 2) continue;
-        const pattern = slice(n, 0, @intCast(pattern_len), ds);
-        for (1..pattern_count) |pi| {
-            if (pattern != slice(n, @intCast(pi * pattern_len), @intCast((pi + 1) * pattern_len), ds)) continue :b;
+    const ds = day2a.digits(n);
+    inline for (1..6) |pattern_len| {
+        if (ds % pattern_len == 0) {
+            const pattern_count: u8 = @intCast(@divExact(ds, pattern_len));
+            if (pattern_count > 1) {
+                const pattern = day2a.slice(n, 0, @intCast(pattern_len), ds);
+                if (matchesPattern(n, ds, pattern, pattern_len, pattern_count)) return true;
+            }
         }
-        return true;
     }
     return false;
 }
 
-fn digits(n: u64) u8 {
-    var d: u8 = 1;
-    inline for (1..12) |e| d += @intFromBool(n >= std.math.pow(u64, 10, e));
-    return d;
-}
-
-fn slice(n: u64, start: u8, end: u8, ds: u8) u64 {
-    const powers = [_]u64{ 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000 };
-    const left: u64 = ds - end;
-    const len: u64 = end - start;
-    return @mod(@divFloor(n, powers[left]), powers[len]);
+fn matchesPattern(n: u64, ds: u8, pattern: u64, pattern_len: u8, pattern_count: u8) bool {
+    for (1..pattern_count) |pi| {
+        const target = day2a.slice(n, @intCast(pi * pattern_len), @intCast((pi + 1) * pattern_len), ds);
+        if (pattern != target) return false;
+    }
+    return true;
 }
 
 test "isInvalid" {
