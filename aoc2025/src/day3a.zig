@@ -8,23 +8,21 @@ pub fn solve(input: []const u8) !usize {
     return total;
 }
 
-pub fn largestJoltage(line: []const u8, digits: u8) usize {
-    _ = digits;
-    var largest1: u8 = 0;
-    var largest1_idx: usize = 0;
+pub fn largestJoltage(line: []const u8, digits: comptime_int) usize {
+    var largest = std.mem.zeroes([digits]u8);
+    var largest_idx: usize = 0;
     for (0..line.len - 1) |i| {
         const d = line[i] - '0';
-        if (d > largest1) {
-            largest1 = d;
-            largest1_idx = i;
+        if (d > largest[0]) {
+            largest[0] = d;
+            largest_idx = i;
         }
     }
-    var largest2: u8 = 0;
-    for (largest1_idx + 1..line.len) |i| {
+    for (largest_idx + 1..line.len) |i| {
         const d = line[i] - '0';
-        if (d > largest2) largest2 = d;
+        if (d > largest[1]) largest[1] = d;
     }
-    return 10 * largest1 + largest2;
+    return 10 * largest[0] + largest[1];
 }
 
 test "day3a demo" {
