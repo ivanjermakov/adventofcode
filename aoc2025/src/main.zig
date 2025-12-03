@@ -2,7 +2,7 @@ const std = @import("std");
 
 pub fn main() !void {
     const warmup = 10;
-    const runs = 100;
+    const runs = 200;
     var buf: [2 << 16]u8 = undefined;
     var timer = try std.time.Timer.start();
     inline for (.{

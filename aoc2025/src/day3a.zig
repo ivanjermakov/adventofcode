@@ -14,9 +14,8 @@ pub fn largestJoltage(line: []const u8, digits: comptime_int) usize {
     var largest_idx: usize = 0;
     inline for (0..digits) |order| {
         for (largest_idx..line.len - (digits - order - 1)) |i| {
-            const d = line[i] - '0';
-            if (d > largest[order]) {
-                largest[order] = d;
+            if (line[i] > largest[order]) {
+                largest[order] = line[i];
                 largest_idx = i;
             }
         }
@@ -24,7 +23,7 @@ pub fn largestJoltage(line: []const u8, digits: comptime_int) usize {
     }
     var total: u64 = 0;
     for (0..digits) |i| {
-        total += largest[i] * day2a.powers[digits - i - 1];
+        total += (largest[i] - '0') * day2a.powers[digits - i - 1];
     }
     return total;
 }
