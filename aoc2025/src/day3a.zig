@@ -1,4 +1,5 @@
 const std = @import("std");
+const day2a = @import("day2a.zig");
 
 pub fn solve(input: []const u8) !usize {
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
@@ -11,18 +12,21 @@ pub fn solve(input: []const u8) !usize {
 pub fn largestJoltage(line: []const u8, digits: comptime_int) usize {
     var largest = std.mem.zeroes([digits]u8);
     var largest_idx: usize = 0;
-    for (0..line.len - 1) |i| {
-        const d = line[i] - '0';
-        if (d > largest[0]) {
-            largest[0] = d;
-            largest_idx = i;
+    inline for (0..digits) |order| {
+        for (largest_idx..line.len - (digits - order - 1)) |i| {
+            const d = line[i] - '0';
+            if (d > largest[order]) {
+                largest[order] = d;
+                largest_idx = i;
+            }
         }
+        largest_idx += 1;
     }
-    for (largest_idx + 1..line.len) |i| {
-        const d = line[i] - '0';
-        if (d > largest[1]) largest[1] = d;
+    var total: u64 = 0;
+    for (0..digits) |i| {
+        total += largest[i] * day2a.powers[digits - i - 1];
     }
-    return 10 * largest[0] + largest[1];
+    return total;
 }
 
 test "day3a demo" {
