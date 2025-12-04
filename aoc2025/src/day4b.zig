@@ -14,43 +14,44 @@ pub fn solve(input: []const u8) !usize {
         positions[len] = @intFromBool(ch == '@');
         len += 1;
     }
-    @memcpy(&positions_next, &positions);
+    positions_next = positions;
 
     const rows: usize = @divExact(len, stride);
     while (dirty) {
-        @memcpy(&positions, &positions_next);
+        positions = positions_next;
         dirty = false;
-        for (0..len) |i| {
-            if (positions[i] == 0) {
-                continue;
-            }
-            const row: i32 = @intCast(@divFloor(i, stride));
-            const col: i32 = @intCast(@mod(i, stride));
-            var neighbors: u8 = 0;
-            inline for (.{
-                .{ -1, -1 },
-                .{ -1, 0 },
-                .{ -1, 1 },
-                .{ 0, -1 },
-                .{ 0, 1 },
-                .{ 1, -1 },
-                .{ 1, 0 },
-                .{ 1, 1 },
-            }) |offset| {
-                const n_row = row + offset[0];
-                const n_col = col + offset[1];
-                if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < stride) {
-                    const np = @abs(@as(i32, @intCast(stride)) * n_row + n_col);
-                    if (positions[np] == 1) {
-                        neighbors += 1;
+        for (0..rows) |row| {
+            for (0..stride) |col| {
+                const i = stride * row + col;
+                if (positions[i] == 0) {
+                    continue;
+                }
+                var neighbors: u8 = 0;
+                inline for (.{
+                    .{ -1, -1 },
+                    .{ -1, 0 },
+                    .{ -1, 1 },
+                    .{ 0, -1 },
+                    .{ 0, 1 },
+                    .{ 1, -1 },
+                    .{ 1, 0 },
+                    .{ 1, 1 },
+                }) |offset| {
+                    const n_row = @as(i32, @intCast(row)) + offset[0];
+                    const n_col = @as(i32, @intCast(col)) + offset[1];
+                    if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < stride) {
+                        const np: i32 = @as(i32, @intCast(stride)) * n_row + n_col;
+                        if (positions[@abs(np)] == 1) {
+                            neighbors += 1;
+                        }
                     }
                 }
-            }
-            const is_roll = neighbors < 4;
-            if (is_roll) {
-                total += 1;
-                positions_next[i] = 0;
-                dirty = true;
+                const is_roll = neighbors < 4;
+                if (is_roll) {
+                    total += 1;
+                    positions_next[i] = 0;
+                    dirty = true;
+                }
             }
         }
     }
@@ -76,5 +77,5 @@ test "day4b demo" {
 test "day4b" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day4.txt", &buf);
-    try std.testing.expectEqual(1560, solve(input));
+    try std.testing.expectEqual(9609, solve(input));
 }
