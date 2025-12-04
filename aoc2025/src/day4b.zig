@@ -69,14 +69,12 @@ pub fn solve(input: []const u8) !usize {
             const n_row = @as(i32, @intCast(p.row)) + offset[0];
             const n_col = @as(i32, @intCast(p.col)) + offset[1];
             if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < cols) {
-                const ni: i32 = @as(i32, @intCast(cols)) * n_row + n_col;
-                if (neighbor_count[@abs(ni)] == 4) {
+                const ni = @abs(@as(i32, @intCast(cols)) * n_row + n_col);
+                if (neighbor_count[ni] == 4) {
                     dirty[dirty_len] = .{ .row = @intCast(n_row), .col = @intCast(n_col) };
-                    dirty_len += 1;
+                    dirty_len +|= 1;
                 }
-                if (neighbor_count[@abs(ni)] > 0) {
-                    neighbor_count[@abs(ni)] -= 1;
-                }
+                neighbor_count[ni] -|= 1;
             }
         }
     }
