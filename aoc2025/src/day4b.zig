@@ -1,60 +1,85 @@
 const std = @import("std");
 
+const Pos = struct {
+    row: u8,
+    col: u8,
+};
+
+const diagonals = .{
+    .{ -1, -1 },
+    .{ -1, 0 },
+    .{ -1, 1 },
+    .{ 0, -1 },
+    .{ 0, 1 },
+    .{ 1, -1 },
+    .{ 1, 0 },
+    .{ 1, 1 },
+};
+
 pub fn solve(input: []const u8) !usize {
+    var alloc_buf: [1 << 16]u8 = undefined;
+    var alloc: std.heap.FixedBufferAllocator = .init(&alloc_buf);
+
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
     var total: usize = 0;
-    var dirty = true;
-    const stride: u8 = @intCast(std.mem.indexOfScalar(u8, in, '\n').?);
-    var positions = std.mem.zeroes([2 << 14]u1);
-    var positions_next = std.mem.zeroes([2 << 14]u1);
+    const cols = std.mem.indexOfScalar(u8, in, '\n').?;
 
+    var positions = std.mem.zeroes([2 << 14]u8);
     var len: usize = 0;
     for (in) |ch| {
-        if (ch == '\n') continue;
-        positions[len] = @intFromBool(ch == '@');
+        switch (ch) {
+            '\n' => continue,
+            '@' => positions[len] = 1,
+            else => {},
+        }
         len += 1;
     }
-    positions_next = positions;
+    const rows: usize = @divExact(len, cols);
 
-    const rows: usize = @divExact(len, stride);
-    while (dirty) {
-        positions = positions_next;
-        dirty = false;
-        for (0..rows) |row| {
-            for (0..stride) |col| {
-                const i = stride * row + col;
-                if (positions[i] == 0) {
-                    continue;
+    var dirty = try std.array_list.Managed(Pos).initCapacity(alloc.allocator(), len);
+    var neighbor_count = std.mem.zeroes([2 << 14]u8);
+    for (0..rows) |row| {
+        for (0..cols) |col| {
+            const i = cols * row + col;
+            if (positions[i] == 0) continue;
+
+            var neighbors: u8 = 0;
+            inline for (diagonals) |offset| {
+                const n_row = @as(i32, @intCast(row)) + offset[0];
+                const n_col = @as(i32, @intCast(col)) + offset[1];
+
+                if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < cols) {
+                    const np = cols * @abs(n_row) + @abs(n_col);
+                    neighbors += positions[np];
                 }
-                var neighbors: u8 = 0;
-                inline for (.{
-                    .{ -1, -1 },
-                    .{ -1, 0 },
-                    .{ -1, 1 },
-                    .{ 0, -1 },
-                    .{ 0, 1 },
-                    .{ 1, -1 },
-                    .{ 1, 0 },
-                    .{ 1, 1 },
-                }) |offset| {
-                    const n_row = @as(i32, @intCast(row)) + offset[0];
-                    const n_col = @as(i32, @intCast(col)) + offset[1];
-                    if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < stride) {
-                        const np: i32 = @as(i32, @intCast(stride)) * n_row + n_col;
-                        if (positions[@abs(np)] == 1) {
-                            neighbors += 1;
-                        }
-                    }
+            }
+
+            if (neighbors < 4) {
+                try dirty.append(.{ .row = @intCast(row), .col = @intCast(col) });
+            } else {
+                neighbor_count[i] = neighbors;
+            }
+        }
+    }
+
+    while (true) {
+        const p = dirty.pop() orelse break;
+        total += 1;
+        inline for (diagonals) |offset| {
+            const n_row = @as(i32, @intCast(p.row)) + offset[0];
+            const n_col = @as(i32, @intCast(p.col)) + offset[1];
+            if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < cols) {
+                const ni: i32 = @as(i32, @intCast(cols)) * n_row + n_col;
+                if (neighbor_count[@abs(ni)] == 4) {
+                    try dirty.append(.{ .row = @intCast(n_row), .col = @intCast(n_col) });
                 }
-                const is_roll = neighbors < 4;
-                if (is_roll) {
-                    total += 1;
-                    positions_next[i] = 0;
-                    dirty = true;
+                if (neighbor_count[@abs(ni)] > 0) {
+                    neighbor_count[@abs(ni)] -= 1;
                 }
             }
         }
     }
+
     return total;
 }
 
