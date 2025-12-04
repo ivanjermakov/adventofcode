@@ -17,9 +17,6 @@ const diagonals = .{
 };
 
 pub fn solve(input: []const u8) !usize {
-    var alloc_buf: [1 << 16]u8 = undefined;
-    var alloc: std.heap.FixedBufferAllocator = .init(&alloc_buf);
-
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
     var total: usize = 0;
     const cols = std.mem.indexOfScalar(u8, in, '\n').?;
@@ -36,7 +33,8 @@ pub fn solve(input: []const u8) !usize {
     }
     const rows: usize = @divExact(len, cols);
 
-    var dirty = try std.array_list.Managed(Pos).initCapacity(alloc.allocator(), len);
+    var dirty: [2 << 10]Pos = undefined;
+    var dirty_len: usize = 0;
     var neighbor_count = std.mem.zeroes([2 << 14]u8);
     for (0..rows) |row| {
         for (0..cols) |col| {
@@ -55,15 +53,17 @@ pub fn solve(input: []const u8) !usize {
             }
 
             if (neighbors < 4) {
-                try dirty.append(.{ .row = @intCast(row), .col = @intCast(col) });
+                dirty[dirty_len] = .{ .row = @intCast(row), .col = @intCast(col) };
+                dirty_len += 1;
             } else {
                 neighbor_count[i] = neighbors;
             }
         }
     }
 
-    while (true) {
-        const p = dirty.pop() orelse break;
+    while (dirty_len > 0) {
+        const p = dirty[dirty_len - 1];
+        dirty_len -= 1;
         total += 1;
         inline for (diagonals) |offset| {
             const n_row = @as(i32, @intCast(p.row)) + offset[0];
@@ -71,7 +71,8 @@ pub fn solve(input: []const u8) !usize {
             if (n_row >= 0 and n_row < rows and n_col >= 0 and n_col < cols) {
                 const ni: i32 = @as(i32, @intCast(cols)) * n_row + n_col;
                 if (neighbor_count[@abs(ni)] == 4) {
-                    try dirty.append(.{ .row = @intCast(n_row), .col = @intCast(n_col) });
+                    dirty[dirty_len] = .{ .row = @intCast(n_row), .col = @intCast(n_col) };
+                    dirty_len += 1;
                 }
                 if (neighbor_count[@abs(ni)] > 0) {
                     neighbor_count[@abs(ni)] -= 1;
