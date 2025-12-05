@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const Range = struct {
+pub const Range = struct {
     from: u64,
     to: u64,
 
@@ -20,13 +20,23 @@ pub fn solve(input: []const u8) !usize {
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
     var parts = std.mem.splitSequence(u8, in, "\n\n");
     const ranges_in = parts.next().?;
+    buildRanges(ranges_in, &ranges);
+
+    var total: usize = 0;
+    for (ranges.items) |range| {
+        total += range.to - range.from + 1;
+    }
+    return total;
+}
+
+pub fn buildRanges(ranges_in: []const u8, ranges: *std.array_list.Managed(Range)) void {
     var ranges_it = std.mem.splitScalar(u8, ranges_in, '\n');
     while (ranges_it.next()) |range_in| {
         var parts_it = std.mem.splitScalar(u8, range_in, '-');
-        try ranges.append(Range{
-            .from = try std.fmt.parseInt(u64, parts_it.next().?, 10),
-            .to = try std.fmt.parseInt(u64, parts_it.next().?, 10),
-        });
+        ranges.append(Range{
+            .from = std.fmt.parseInt(u64, parts_it.next().?, 10) catch unreachable,
+            .to = std.fmt.parseInt(u64, parts_it.next().?, 10) catch unreachable,
+        }) catch unreachable;
     }
     std.mem.sortUnstable(Range, ranges.items, .{}, comptime Range.lessThan);
 
@@ -48,11 +58,6 @@ pub fn solve(input: []const u8) !usize {
         std.debug.assert(range.to >= range.from);
         i += 1;
     }
-    var total: usize = 0;
-    for (ranges.items) |range| {
-        total += range.to - range.from + 1;
-    }
-    return total;
 }
 
 test "day5b demo" {

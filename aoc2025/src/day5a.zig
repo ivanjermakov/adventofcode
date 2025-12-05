@@ -1,23 +1,18 @@
 const std = @import("std");
+const day5b = @import("day5b.zig");
 
 const Range = struct { from: u64, to: u64 };
 
 pub fn solve(input: []const u8) !usize {
     var alloc_buf: [1 << 14]u8 = undefined;
     var alloc: std.heap.FixedBufferAllocator = .init(&alloc_buf);
-    var ranges: std.array_list.Managed(Range) = try .initCapacity(alloc.allocator(), 1 << 8);
+    var ranges: std.array_list.Managed(day5b.Range) = try .initCapacity(alloc.allocator(), 1 << 8);
 
     const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
     var parts = std.mem.splitSequence(u8, in, "\n\n");
     const ranges_in = parts.next().?;
-    var ranges_it = std.mem.splitScalar(u8, ranges_in, '\n');
-    while (ranges_it.next()) |range_in| {
-        var parts_it = std.mem.splitScalar(u8, range_in, '-');
-        try ranges.append(Range{
-            .from = try std.fmt.parseInt(u64, parts_it.next().?, 10),
-            .to = try std.fmt.parseInt(u64, parts_it.next().?, 10),
-        });
-    }
+    day5b.buildRanges(ranges_in, &ranges);
+
     const ids_in = parts.next().?;
     var ids_it = std.mem.splitScalar(u8, ids_in, '\n');
     var count: usize = 0;
