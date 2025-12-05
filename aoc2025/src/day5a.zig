@@ -53,5 +53,5 @@ test "day5a demo" {
 test "day5a" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day5.txt", &buf);
-    try std.testing.expectEqual(0, solve(input));
+    try std.testing.expectEqual(739, solve(input));
 }
