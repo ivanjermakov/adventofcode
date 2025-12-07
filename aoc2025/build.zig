@@ -27,8 +27,10 @@ pub fn build(b: *std.Build) void {
         run_cmd.addArgs(args);
     }
 
+    const test_runner: std.Build.Step.Compile.TestRunner = .{ .path = b.path("src/test_runner.zig"), .mode = .simple };
     const tests = b.addTest(.{
         .root_module = exe.root_module,
+        .test_runner = test_runner,
     });
 
     const run_tests = b.addRunArtifact(tests);

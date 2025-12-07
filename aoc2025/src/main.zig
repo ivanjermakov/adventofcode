@@ -2,7 +2,7 @@ const std = @import("std");
 
 pub fn main() !void {
     const warmup = 10;
-    const runs = 200;
+    const runs = 100;
     var buf: [2 << 16]u8 = undefined;
     var timer = try std.time.Timer.start();
     inline for (.{
@@ -18,6 +18,8 @@ pub fn main() !void {
         .{ .part = "day5b", .solve_fn = @import("day5b.zig").solve, .input = "day5.txt" },
         .{ .part = "day6a", .solve_fn = @import("day6a.zig").solve, .input = "day6.txt" },
         .{ .part = "day6b", .solve_fn = @import("day6b.zig").solve, .input = "day6.txt" },
+        .{ .part = "day7a", .solve_fn = @import("day7a.zig").solve, .input = "day7.txt" },
+        .{ .part = "day7b", .solve_fn = @import("day7b.zig").solve, .input = "day7.txt" },
     }) |entry| {
         const input = try std.fs.cwd().readFile(std.fmt.comptimePrint("./data/{s}", .{entry.input}), &buf);
         for (0..warmup) |_| _ = try entry.solve_fn(input);
