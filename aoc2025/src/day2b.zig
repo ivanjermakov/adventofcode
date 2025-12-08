@@ -19,12 +19,15 @@ pub fn solve(input: []const u8) !usize {
     return day2a.solveModulos(input, &modulosMulti);
 }
 
-test "day2b demo" {
-    const input = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
+test "demo" {
+    const input =
+        \\11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124
+        \\
+    ;
     try std.testing.expectEqual(4174379265, solve(input));
 }
 
-test "day2b" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day2.txt", &buf);
     try std.testing.expectEqual(49046150754, solve(input));

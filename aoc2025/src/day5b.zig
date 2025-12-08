@@ -17,8 +17,7 @@ pub fn solve(input: []const u8) !usize {
     var alloc: std.heap.FixedBufferAllocator = .init(&alloc_buf);
     var ranges: std.array_list.Managed(Range) = try .initCapacity(alloc.allocator(), 1 << 8);
 
-    const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
-    var parts = std.mem.splitSequence(u8, in, "\n\n");
+    var parts = std.mem.splitSequence(u8, input[0 .. input.len - 1], "\n\n");
     const ranges_in = parts.next().?;
     buildRanges(ranges_in, &ranges);
 
@@ -60,7 +59,7 @@ pub fn buildRanges(ranges_in: []const u8, ranges: *std.array_list.Managed(Range)
     }
 }
 
-test "day5b demo" {
+test "demo" {
     const input =
         \\3-5
         \\10-14
@@ -73,21 +72,23 @@ test "day5b demo" {
         \\11
         \\17
         \\32
+        \\
     ;
     try std.testing.expectEqual(14, solve(input));
 }
 
-test "day5b demo 2" {
+test "demo 2" {
     const input =
         \\1-10
         \\4-7
         \\
         \\1
+        \\
     ;
     try std.testing.expectEqual(10, solve(input));
 }
 
-test "day5b" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day5.txt", &buf);
     try std.testing.expectEqual(344486348901788, solve(input));

@@ -17,13 +17,12 @@ const diagonals = .{
 };
 
 pub fn solve(input: []const u8) !usize {
-    const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
     var total: usize = 0;
-    const cols = std.mem.indexOfScalar(u8, in, '\n').?;
+    const cols = std.mem.indexOfScalar(u8, input, '\n').?;
 
     var positions = std.mem.zeroes([2 << 14]u8);
     var len: usize = 0;
-    for (in) |ch| {
+    for (input) |ch| {
         switch (ch) {
             '\n' => continue,
             '@' => positions[len] = 1,
@@ -82,7 +81,7 @@ pub fn solve(input: []const u8) !usize {
     return total;
 }
 
-test "day4b demo" {
+test "demo" {
     const input =
         \\..@@.@@@@.
         \\@@@.@.@.@@
@@ -94,11 +93,12 @@ test "day4b demo" {
         \\@.@@@.@@@@
         \\.@@@@@@@@.
         \\@.@.@@@.@.
+        \\
     ;
     try std.testing.expectEqual(43, solve(input));
 }
 
-test "day4b" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day4.txt", &buf);
     try std.testing.expectEqual(9609, solve(input));

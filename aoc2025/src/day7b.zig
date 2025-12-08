@@ -1,11 +1,10 @@
 const std = @import("std");
 
 pub fn solve(input: []const u8) !usize {
-    const in = if (std.mem.eql(u8, input[input.len - 2 ..], "\n\n")) input[0 .. input.len - 2] else input;
-    const width = std.mem.indexOfScalar(u8, in, '\n').?;
-    const height = @divExact(in.len, width);
+    const width = std.mem.indexOfScalar(u8, input, '\n').?;
+    const height = @divExact(input.len - 1, width);
     var timelines: usize = 1;
-    var it = std.mem.splitScalar(u8, in, '\n');
+    var it = std.mem.splitScalar(u8, input[0..input.len - 1], '\n');
     var beams: [2 << 7]u64 = @splat(0);
     var beams_next: [2 << 7]u64 = @splat(0);
     beams_next[@divFloor(width, 2)] = 1;
@@ -29,7 +28,7 @@ pub fn solve(input: []const u8) !usize {
     return timelines;
 }
 
-test "day7b demo" {
+test "demo" {
     const input =
         \\.......S.......
         \\...............
@@ -47,12 +46,13 @@ test "day7b demo" {
         \\...............
         \\.^.^.^.^.^...^.
         \\...............
+        \\
     ;
     try std.testing.expectEqual(40, solve(input));
 }
 
-test "day7b" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day7.txt", &buf);
-    try std.testing.expectEqual(0, solve(input));
+    try std.testing.expectEqual(13418215871354, solve(input));
 }

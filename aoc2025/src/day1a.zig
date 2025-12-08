@@ -13,7 +13,7 @@ pub fn solve(input: []const u8) !usize {
     return zero_count;
 }
 
-test "day1a demo" {
+test "demo" {
     const input =
         \\L68
         \\L30
@@ -25,11 +25,12 @@ test "day1a demo" {
         \\L99
         \\R14
         \\L82
+        \\
     ;
     try std.testing.expectEqual(3, solve(input));
 }
 
-test "day1a" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day1.txt", &buf);
     try std.testing.expectEqual(1086, solve(input));

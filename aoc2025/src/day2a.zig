@@ -38,8 +38,7 @@ pub fn solveModulos(input: []const u8, modulos: []const []const u64) !usize {
     var alloc: std.heap.FixedBufferAllocator = .init(&alloc_buf);
     var map: std.AutoArrayHashMap(u64, void) = .init(alloc.allocator());
 
-    const in = if (input[input.len - 1] == '\n') input[0 .. input.len - 2] else input;
-    var it = std.mem.splitScalar(u8, in, ',');
+    var it = std.mem.splitScalar(u8, input[0..input.len - 1], ',');
     var total: u64 = 0;
 
     while (it.next()) |range| {
@@ -67,12 +66,15 @@ pub fn solveModulos(input: []const u8, modulos: []const []const u64) !usize {
     return total;
 }
 
-test "day2a demo" {
-    const input = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
+test "demo" {
+    const input =
+        \\11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124
+        \\
+    ;
     try std.testing.expectEqual(1227775554, solve(input));
 }
 
-test "day2a" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day2.txt", &buf);
     try std.testing.expectEqual(38437576669, solve(input));

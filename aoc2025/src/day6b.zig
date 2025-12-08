@@ -5,16 +5,15 @@ pub fn solve(input: []const u8) !usize {
     var allocator: std.heap.FixedBufferAllocator = .init(&alloc_buf);
     const alloc = allocator.allocator();
 
-    const in = if (std.mem.eql(u8, input[input.len - 2 ..], "\n\n")) input[0 .. input.len - 1] else input;
-    const in_width = std.mem.indexOf(u8, in, "\n").? + 1;
-    const in_height = @divExact(in.len, in_width);
+    const in_width = std.mem.indexOf(u8, input, "\n").? + 1;
+    const in_height = @divExact(input.len, in_width);
 
     var ns: std.array_list.Managed(u64) = .init(alloc);
     var num: std.array_list.Managed(u8) = .init(alloc);
     var blank_cols: std.array_list.Managed(usize) = .init(alloc);
     for (0..in_width) |x| {
         for (0..in_height - 1) |y| {
-            const ch = in[y * in_width + x];
+            const ch = input[y * in_width + x];
             if (std.ascii.isDigit(ch)) {
                 try num.append(ch);
             }
@@ -29,7 +28,7 @@ pub fn solve(input: []const u8) !usize {
 
     var ops: std.array_list.Managed(u1) = .init(alloc);
     for (0..in_width) |x| {
-        const ch = in[(in_height - 1) * in_width + x];
+        const ch = input[(in_height - 1) * in_width + x];
         switch (ch) {
             '+' => try ops.append(0),
             '*' => try ops.append(1),
@@ -66,7 +65,7 @@ pub fn solve(input: []const u8) !usize {
     return acc;
 }
 
-test "day6b demo" {
+test "demo" {
     const input =
         \\123 328  51 64 
         \\ 45 64  387 23 
@@ -77,7 +76,7 @@ test "day6b demo" {
     try std.testing.expectEqual(3263827, solve(input));
 }
 
-test "day6b" {
+test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day6.txt", &buf);
     try std.testing.expectEqual(10756006415204, solve(input));
