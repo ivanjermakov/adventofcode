@@ -31,17 +31,17 @@ pub fn solve(input: []const u8) !usize {
     const pairs = pairs_buf[0..pairs_len];
     std.mem.sortUnstable(day8a.Pair, pairs, .{}, comptime day8a.lessThanDSq);
 
-    var last_circuit: ?u10 = null;
-    var box_circuit_buf: [2 << 10]?u10 = @splat(null);
+    var last_circuit: ?u16 = null;
+    var box_circuit_buf: [2 << 10]?u16 = @splat(null);
     const box_circuit = box_circuit_buf[0..boxes_len];
-    var circuit_len: u10 = 0;
+    var circuit_len: u16 = 0;
     for (pairs) |pair| {
         if (box_circuit[pair.bi1] != null and box_circuit[pair.bi1] == box_circuit[pair.bi2]) {
             continue;
         } else if (box_circuit[pair.bi1] != null and box_circuit[pair.bi2] != null) {
             const c1 = box_circuit[pair.bi1].?;
             const c2 = box_circuit[pair.bi2].?;
-            std.mem.replaceScalar(?u10, box_circuit, c2, c1);
+            std.mem.replaceScalar(?u16, box_circuit, c2, c1);
             last_circuit = c1;
         } else if (box_circuit[pair.bi1]) |c1| {
             std.debug.assert(box_circuit[pair.bi2] == null);
@@ -55,7 +55,7 @@ pub fn solve(input: []const u8) !usize {
             circuit_len += 1;
             continue;
         }
-        if (last_circuit != null and std.mem.allEqual(?u10, box_circuit, last_circuit)) {
+        if (last_circuit != null and std.mem.allEqual(?u16, box_circuit, last_circuit)) {
             return @as(u32, 1) * boxes[pair.bi1].x * boxes[pair.bi2].x;
         }
     }
