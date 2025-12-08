@@ -2,7 +2,6 @@ const std = @import("std");
 const day8a = @import("day8a.zig");
 
 pub fn solve(input: []const u8) !usize {
-    const alloc = std.heap.page_allocator;
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     const boxes_len = std.mem.count(u8, input, "\n");
     var boxes_buf: [2 << 10]day8a.Vec3 = undefined;
@@ -13,14 +12,18 @@ pub fn solve(input: []const u8) !usize {
     }
     const boxes = boxes_buf[0..boxes_len];
 
-    var pairs_buf = try alloc.create([2 << 22]day8a.Pair);
+    const threshold_dist = 15_000;
+    const threshold_dist_sq = threshold_dist * threshold_dist;
+    var pairs_buf: [2 << 12]day8a.Pair = undefined;
     var pairs_len: usize = 0;
     for (0..boxes_len - 1) |bi1| {
         for (bi1 + 1..boxes_len) |bi2| {
+            const d_sq = day8a.Vec3.distanceSq(boxes[bi1], boxes[bi2]);
+            if (d_sq > threshold_dist_sq) continue;
             pairs_buf[pairs_len] = .{
                 .bi1 = @intCast(bi1),
                 .bi2 = @intCast(bi2),
-                .dSq = day8a.Vec3.distanceSq(boxes[bi1], boxes[bi2]),
+                .d_sq = d_sq,
             };
             pairs_len += 1;
         }
@@ -57,7 +60,6 @@ pub fn solve(input: []const u8) !usize {
             return @as(u32, @intCast(boxes[pair.bi1].x)) * boxes[pair.bi2].x;
         }
     }
-    std.debug.print("{any}\n", .{box_circuit});
     unreachable;
 }
 

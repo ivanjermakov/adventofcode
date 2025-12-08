@@ -27,12 +27,12 @@ pub const Vec3 = struct {
 pub const Pair = struct {
     bi1: u10,
     bi2: u10,
-    dSq: u64,
+    d_sq: u64,
 };
 
 pub fn lessThanDSq(ctx: @TypeOf(.{}), p1: Pair, p2: Pair) bool {
     _ = ctx;
-    return p1.dSq < p2.dSq;
+    return p1.d_sq < p2.d_sq;
 }
 
 pub fn solve(input: []const u8) !usize {
@@ -40,7 +40,6 @@ pub fn solve(input: []const u8) !usize {
 }
 
 fn solveSteps(input: []const u8, steps: u10) !usize {
-    const alloc = std.heap.page_allocator;
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     const boxes_len = std.mem.count(u8, input, "\n");
     var boxes_buf: [2 << 10]Vec3 = undefined;
@@ -51,14 +50,18 @@ fn solveSteps(input: []const u8, steps: u10) !usize {
     }
     const boxes = boxes_buf[0..boxes_len];
 
-    var pairs_buf = try alloc.create([2 << 22]Pair);
+    const threshold_dist = 10_000;
+    const threshold_dist_sq = threshold_dist * threshold_dist;
+    var pairs_buf: [2 << 12]Pair = undefined;
     var pairs_len: usize = 0;
     for (0..boxes_len - 1) |bi1| {
         for (bi1 + 1..boxes_len) |bi2| {
+            const d_sq = Vec3.distanceSq(boxes[bi1], boxes[bi2]);
+            if (d_sq > threshold_dist_sq) continue;
             pairs_buf[pairs_len] = .{
                 .bi1 = @intCast(bi1),
                 .bi2 = @intCast(bi2),
-                .dSq = Vec3.distanceSq(boxes[bi1], boxes[bi2]),
+                .d_sq = d_sq,
             };
             pairs_len += 1;
         }
