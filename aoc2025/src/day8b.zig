@@ -56,7 +56,7 @@ pub fn solve(input: []const u8) !usize {
             continue;
         }
         if (last_circuit != null and std.mem.allEqual(?u16, box_circuit, last_circuit)) {
-            return @as(u32, 1) * boxes[pair.bi1].x * boxes[pair.bi2].x;
+            return @as(usize, boxes[pair.bi1].x) * boxes[pair.bi2].x;
         }
     }
     unreachable;

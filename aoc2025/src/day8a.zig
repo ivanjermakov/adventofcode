@@ -17,10 +17,10 @@ pub const Vec3 = struct {
     }
 
     pub fn distanceSq(self: Vec3, other: Vec3) u64 {
-        const dx = @abs(@as(i64, @intCast(self.x)) - other.x);
-        const dy = @abs(@as(i64, @intCast(self.y)) - other.y);
-        const dz = @abs(@as(i64, @intCast(self.z)) - other.z);
-        return dx * dx + dy * dy + dz * dz;
+        const dx = @as(i64, self.x) - other.x;
+        const dy = @as(i64, self.y) - other.y;
+        const dz = @as(i64, self.z) - other.z;
+        return @intCast(dx * dx + dy * dy + dz * dz);
     }
 };
 
