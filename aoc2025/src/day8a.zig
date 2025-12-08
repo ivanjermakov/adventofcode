@@ -81,11 +81,7 @@ fn solveSteps(input: []const u8, steps: u10) !usize {
         } else if (box_circuit[pair.bi1] != null and box_circuit[pair.bi2] != null) {
             const c1 = box_circuit[pair.bi1].?;
             const c2 = box_circuit[pair.bi2].?;
-            for (0..boxes.len) |bi| {
-                if (box_circuit[bi] == c2) {
-                    box_circuit[bi] = c1;
-                }
-            }
+            std.mem.replaceScalar(?u10, box_circuit, c2, c1);
         } else if (box_circuit[pair.bi1]) |c1| {
             std.debug.assert(box_circuit[pair.bi2] == null);
             box_circuit[pair.bi2] = c1;
@@ -98,6 +94,7 @@ fn solveSteps(input: []const u8, steps: u10) !usize {
             circuit_len += 1;
         }
     }
+
     var sizes_buf: [2 << 10]u32 = @splat(0);
     const sizes = sizes_buf[0..boxes.len];
     for (0..boxes.len) |bi| {

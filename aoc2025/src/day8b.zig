@@ -40,11 +40,7 @@ pub fn solve(input: []const u8) !usize {
         } else if (box_circuit[pair.bi1] != null and box_circuit[pair.bi2] != null) {
             const c1 = box_circuit[pair.bi1].?;
             const c2 = box_circuit[pair.bi2].?;
-            for (0..boxes.len) |bi| {
-                if (box_circuit[bi] == c2) {
-                    box_circuit[bi] = c1;
-                }
-            }
+            std.mem.replaceScalar(?u10, box_circuit, c2, c1);
         } else if (box_circuit[pair.bi1]) |c1| {
             std.debug.assert(box_circuit[pair.bi2] == null);
             box_circuit[pair.bi2] = c1;
@@ -57,7 +53,7 @@ pub fn solve(input: []const u8) !usize {
             circuit_len += 1;
         }
         if (box_circuit[0] != null and std.mem.allEqual(?u10, box_circuit, box_circuit[0])) {
-            return @as(u32, @intCast(boxes[pair.bi1].x)) * boxes[pair.bi2].x;
+            return @as(u32, 1) * boxes[pair.bi1].x * boxes[pair.bi2].x;
         }
     }
     unreachable;
