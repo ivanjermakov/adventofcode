@@ -1,43 +1,11 @@
 const std = @import("std");
-
-const Vec3 = struct {
-    x: u18,
-    y: u18,
-    z: u18,
-
-    fn parse(line: []const u8) Vec3 {
-        var it = std.mem.splitScalar(u8, line, ',');
-        return .{
-            .x = std.fmt.parseUnsigned(u18, it.next().?, 10) catch unreachable,
-            .y = std.fmt.parseUnsigned(u18, it.next().?, 10) catch unreachable,
-            .z = std.fmt.parseUnsigned(u18, it.next().?, 10) catch unreachable,
-        };
-    }
-
-    fn distanceSq(self: Vec3, other: Vec3) u64 {
-        const dx = @abs(@as(i64, @intCast(self.x)) - @as(i64, @intCast(other.x)));
-        const dy = @abs(@as(i64, @intCast(self.y)) - @as(i64, @intCast(other.y)));
-        const dz = @abs(@as(i64, @intCast(self.z)) - @as(i64, @intCast(other.z)));
-        return dx * dx + dy * dy + dz * dz;
-    }
-};
-
-const Pair = struct {
-    bi1: u10,
-    bi2: u10,
-    dSq: u64,
-};
-
-fn lessThanDSq(ctx: @TypeOf(.{}), p1: Pair, p2: Pair) bool {
-    _ = ctx;
-    return p1.dSq < p2.dSq;
-}
+const day8a = @import("day8a.zig");
 
 pub fn solve(input: []const u8) !usize {
     const alloc = std.heap.page_allocator;
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     const boxes_len = std.mem.count(u8, input, "\n");
-    var boxes_buf: [2 << 10]Vec3 = undefined;
+    var boxes_buf: [2 << 10]day8a.Vec3 = undefined;
     var box_idx: usize = 0;
     while (it.next()) |line| {
         defer box_idx += 1;
@@ -45,20 +13,20 @@ pub fn solve(input: []const u8) !usize {
     }
     const boxes = boxes_buf[0..boxes_len];
 
-    var pairs_buf = try alloc.create([2 << 22]Pair);
+    var pairs_buf = try alloc.create([2 << 22]day8a.Pair);
     var pairs_len: usize = 0;
     for (0..boxes_len - 1) |bi1| {
         for (bi1 + 1..boxes_len) |bi2| {
             pairs_buf[pairs_len] = .{
                 .bi1 = @intCast(bi1),
                 .bi2 = @intCast(bi2),
-                .dSq = Vec3.distanceSq(boxes[bi1], boxes[bi2]),
+                .dSq = day8a.Vec3.distanceSq(boxes[bi1], boxes[bi2]),
             };
             pairs_len += 1;
         }
     }
     const pairs = pairs_buf[0..pairs_len];
-    std.mem.sortUnstable(Pair, pairs, .{}, comptime lessThanDSq);
+    std.mem.sortUnstable(day8a.Pair, pairs, .{}, comptime day8a.lessThanDSq);
 
     var box_circuit_buf: [2 << 10]?u10 = @splat(null);
     const box_circuit = box_circuit_buf[0..boxes_len];

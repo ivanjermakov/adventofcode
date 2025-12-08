@@ -1,34 +1,36 @@
 const std = @import("std");
 
-const Vec3 = struct {
-    x: u18,
-    y: u18,
-    z: u18,
+pub const Vec3 = struct {
+    const Size = u32;
 
-    fn parse(line: []const u8) Vec3 {
+    x: Size,
+    y: Size,
+    z: Size,
+
+    pub fn parse(line: []const u8) Vec3 {
         var it = std.mem.splitScalar(u8, line, ',');
         return .{
-            .x = std.fmt.parseUnsigned(u18, it.next().?, 10) catch unreachable,
-            .y = std.fmt.parseUnsigned(u18, it.next().?, 10) catch unreachable,
-            .z = std.fmt.parseUnsigned(u18, it.next().?, 10) catch unreachable,
+            .x = std.fmt.parseUnsigned(Size, it.next().?, 10) catch unreachable,
+            .y = std.fmt.parseUnsigned(Size, it.next().?, 10) catch unreachable,
+            .z = std.fmt.parseUnsigned(Size, it.next().?, 10) catch unreachable,
         };
     }
 
-    fn distanceSq(self: Vec3, other: Vec3) u64 {
-        const dx = @abs(@as(i64, @intCast(self.x)) - @as(i64, @intCast(other.x)));
-        const dy = @abs(@as(i64, @intCast(self.y)) - @as(i64, @intCast(other.y)));
-        const dz = @abs(@as(i64, @intCast(self.z)) - @as(i64, @intCast(other.z)));
+    pub fn distanceSq(self: Vec3, other: Vec3) u64 {
+        const dx = @abs(@as(i64, @intCast(self.x)) - other.x);
+        const dy = @abs(@as(i64, @intCast(self.y)) - other.y);
+        const dz = @abs(@as(i64, @intCast(self.z)) - other.z);
         return dx * dx + dy * dy + dz * dz;
     }
 };
 
-const Pair = struct {
+pub const Pair = struct {
     bi1: u10,
     bi2: u10,
     dSq: u64,
 };
 
-fn lessThanDSq(ctx: @TypeOf(.{}), p1: Pair, p2: Pair) bool {
+pub fn lessThanDSq(ctx: @TypeOf(.{}), p1: Pair, p2: Pair) bool {
     _ = ctx;
     return p1.dSq < p2.dSq;
 }
@@ -37,7 +39,7 @@ pub fn solve(input: []const u8) !usize {
     return solveSteps(input, 1000);
 }
 
-pub fn solveSteps(input: []const u8, steps: u10) !usize {
+fn solveSteps(input: []const u8, steps: u10) !usize {
     const alloc = std.heap.page_allocator;
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     const boxes_len = std.mem.count(u8, input, "\n");
