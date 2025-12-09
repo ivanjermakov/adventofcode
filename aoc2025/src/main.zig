@@ -22,6 +22,7 @@ pub fn main() !void {
         .{ .part = "day7b", .solve_fn = @import("day7b.zig").solve, .input = "day7.txt" },
         .{ .part = "day8a", .solve_fn = @import("day8a.zig").solve, .input = "day8.txt" },
         .{ .part = "day8b", .solve_fn = @import("day8b.zig").solve, .input = "day8.txt" },
+        .{ .part = "day9a", .solve_fn = @import("day9a.zig").solve, .input = "day9.txt" },
     }) |entry| {
         const input = try std.fs.cwd().readFile(std.fmt.comptimePrint("./data/{s}", .{entry.input}), &buf);
         for (0..warmup) |_| _ = try entry.solve_fn(input);
@@ -32,7 +33,7 @@ pub fn main() !void {
             _ = try entry.solve_fn(input);
             total += @divFloor(timer.read(), std.time.ns_per_us);
         }
-        std.debug.print("{s}: {}μs\n", .{ entry.part, @divFloor(total, runs) });
+        std.debug.print("{s}: {: >5}μs\n", .{ entry.part, @divFloor(total, runs) });
     }
 }
 
