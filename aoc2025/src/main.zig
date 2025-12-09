@@ -23,6 +23,7 @@ pub fn main() !void {
         .{ .part = "day8a", .solve_fn = @import("day8a.zig").solve, .input = "day8.txt" },
         .{ .part = "day8b", .solve_fn = @import("day8b.zig").solve, .input = "day8.txt" },
         .{ .part = "day9a", .solve_fn = @import("day9a.zig").solve, .input = "day9.txt" },
+        .{ .part = "day9b", .solve_fn = @import("day9b.zig").solve, .input = "day9.txt" },
     }) |entry| {
         const input = try std.fs.cwd().readFile(std.fmt.comptimePrint("./data/{s}", .{entry.input}), &buf);
         for (0..warmup) |_| _ = try entry.solve_fn(input);
