@@ -2,8 +2,11 @@ const std = @import("std");
 const day9a = @import("day9a.zig");
 const Vec2 = day9a.Vec2;
 
+/// Input assumptions:
+///   - polygon looks like a circle with a very deep rectangular cut from the left at vertical center
+///   - polygon "steps" are regular, e.g. repeating up-left-up-left-up-... direction in top right quadrant
+///   - solution is in the top hemisphere
 pub fn solve(input: []const u8) !usize {
-    std.debug.print("\n", .{});
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     const tiles_len = std.mem.count(u8, input, "\n");
     var tiles_buf: [2 << 8]Vec2 = undefined;
@@ -27,22 +30,17 @@ pub fn solve(input: []const u8) !usize {
     std.mem.sortUnstable(u32, ys, {}, comptime std.sort.asc(u32));
 
     // find circle cut in round polygon
-    var threshold_low: ?u32 = null;
-    var threshold_high: ?u32 = null;
-    const size: Vec2 = .{ .x = 100_000, .y = 100_000 };
+    var threshold: ?Vec2 = null;
+    const size = 100_000;
     b: for (ys) |y| {
         for (0..tiles.len - 1) |t1| {
             const tile1 = tiles[t1];
             if (tile1.y != y) continue;
             for (t1 + 1..tiles.len) |t2| {
                 const tile2 = tiles[t2];
-                if (tile1.y == tile2.y and @abs(@as(i32, @intCast(tile1.x)) - @as(i32, @intCast(tile2.x))) > @divFloor(size.x, 2)) {
-                    if (threshold_low == null) {
-                        threshold_low = @intCast(y);
-                        continue :b;
-                    }
-                    if (threshold_high == null) {
-                        threshold_high = @intCast(y);
+                if (tile1.y == tile2.y and @as(i32, @intCast(tile2.x)) - @as(i32, @intCast(tile1.x)) > @divFloor(size, 2)) {
+                    if (threshold == null) {
+                        threshold = tile2;
                         break :b;
                     }
                 }
@@ -50,43 +48,27 @@ pub fn solve(input: []const u8) !usize {
         }
     }
 
-    var xs: [1 << 8]u32 = undefined;
-    var xs_len: usize = 0;
-    var max_area: usize = 0;
-    // iterate lines above `threshold_top` and below `threshold_bottom` and find maximum area
-    for (1..ys.len - 1) |yi| {
-        const y = ys[yi];
-        xs_len = 0;
-        if (y >= threshold_low.? and y <= threshold_high.?) continue;
-        const threshold = if (y < threshold_low.?) threshold_low.? else threshold_high.?;
-        if (y < threshold_low.?) {
-            const y_prev = ys[yi - 1];
-            for (tiles) |t| {
-                if (t.y <= threshold and t.y <= y and t.y >= y_prev) {
-                    xs[xs_len] = t.x;
-                    xs_len += 1;
-                }
-            }
-        } else {
-            const y_next = ys[yi + 1];
-            for (tiles) |t| {
-                if (t.y >= threshold and t.y >= y and t.y <= y_next) {
-                    xs[xs_len] = t.x;
-                    xs_len += 1;
-                }
-            }
+    // find last y pos at which `threshold.x` still fit
+    var last_fit_line: ?usize = null;
+    for (0..ys.len) |yi| {
+        var max_x: ?u32 = null;
+        for (tiles) |t| {
+            if (t.y != ys[yi]) continue;
+            max_x = @max(max_x orelse 0, t.x);
         }
-        if (xs_len == 0) continue;
-        std.mem.sortUnstable(u32, xs[0..xs_len], {}, comptime std.sort.asc(u32));
+        if (max_x == null) continue;
+        if (ys[yi] >= threshold.?.y and max_x.? >= threshold.?.x) {
+            last_fit_line = yi;
+        }
+    }
 
-        const x_low = xs[0];
-        const x_high = xs[xs_len - 1];
-        const c1 = Vec2{ .x = x_high, .y = threshold };
-        const c2 = Vec2{ .x = x_low, .y = y };
-        const area = c1.area(c2);
-        if (area > max_area) {
-            std.debug.print("{} {} {} {}\n", .{ area, y, c1, c2 });
-            max_area = area;
+    // optimal area tile should be within 2 lines from last fit line
+    var max_area: usize = 0;
+    for (last_fit_line.? - 1..last_fit_line.? + 1) |yi| {
+        for (tiles) |t| {
+            if (t.y != ys[yi]) continue;
+            const a = t.area(threshold.?);
+            max_area = @max(max_area, a);
         }
     }
 
@@ -96,5 +78,5 @@ pub fn solve(input: []const u8) !usize {
 test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day9.txt", &buf);
-    try std.testing.expectEqual(0, solve(input));
+    try std.testing.expectEqual(1513792010, solve(input));
 }
