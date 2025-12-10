@@ -1,7 +1,7 @@
 const std = @import("std");
 
 pub fn solve(input: []const u8) !usize {
-    var alloc_buf: [1 << 14]u8 = undefined;
+    var alloc_buf: [1 << 18]u8 = undefined;
     var allocator: std.heap.FixedBufferAllocator = .init(&alloc_buf);
     const alloc = allocator.allocator();
 
