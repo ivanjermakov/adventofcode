@@ -36,7 +36,7 @@ pub fn main() !void {
             _ = try entry.solve_fn(input);
             total += @divFloor(timer.read(), std.time.ns_per_us);
         }
-        std.debug.print("{s}: {: >5}μs\n", .{ entry.part, @divFloor(total, runs) });
+        std.debug.print("{s: <6} {: >5}μs\n", .{ entry.part, @divFloor(total, runs) });
     }
 }
 
