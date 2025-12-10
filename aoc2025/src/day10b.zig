@@ -6,7 +6,6 @@ pub fn solve(input: []const u8) !usize {
     const alloc = allocator.allocator();
 
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
-    var total: usize = 0;
     while (it.next()) |line| {
         var counts_buf: [1 << 5]u8 = undefined;
         var wirings: std.array_list.Managed([]u8) = .init(alloc);
@@ -32,76 +31,31 @@ pub fn solve(input: []const u8) !usize {
                 else => {},
             }
         }
-        const min = minPresses(counts_buf[0..counts_len], wirings.items);
-        total += min;
+        const counts = counts_buf[0..counts_len];
+        printEquation(counts, wirings.items);
+        std.debug.print("\n", .{});
     }
-    return total;
-}
-
-fn minPresses(counts: []u8, wirings: [][]u8) u8 {
-    std.debug.print("{any} |", .{counts});
-    for (wirings) |w| std.debug.print(" {any}", .{w});
-    std.debug.print("\n", .{});
     return 0;
 }
 
-fn verify(counts: []const u8, wirings: []const []const u8, presses: []const u8) bool {
-    std.debug.assert(wirings.len == presses.len);
-    var cs_buf: [1 << 5]u8 = undefined;
-    const cs = cs_buf[0..counts.len];
-    @memcpy(cs, counts);
-    for (0..wirings.len) |i| {
-        for (wirings[i]) |w| {
-            cs[w] -%= presses[i];
+fn printEquation(counts: []const u8, wirings: []const []const u8) void {
+    for (0..wirings.len) |wi| {
+        const wiring = wirings[wi];
+        const v_name: u8 = @intCast('a' + wi);
+        std.debug.print("{c}(", .{v_name});
+        for (0..wiring.len) |i| {
+            const bi = wiring[i];
+            std.debug.print("{}", .{counts[bi]});
+            if (i != wiring.len - 1) std.debug.print("+", .{});
         }
+        std.debug.print(")", .{});
+        if (wi != wirings.len - 1) std.debug.print("*", .{});
     }
-    return std.mem.allEqual(u8, cs, 0);
+    std.debug.print(" min(", .{});
+    for (0..wirings.len) |wi| {
+        const v_name: u8 = @intCast('a' + wi);
+        std.debug.print("{c}", .{v_name});
+        if (wi != wirings.len - 1) std.debug.print("+", .{});
+    }
+    std.debug.print(")", .{});
 }
-
-test "verify" {
-    try std.testing.expect(verify(
-        &.{ 11, 10 },
-        &.{ &.{0}, &.{1}, &.{ 0, 1 } },
-        &.{ 2, 1, 9 },
-    ));
-}
-
-// test "demo" {
-//     const input =
-//         \\[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
-//         \\[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
-//         \\[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}
-//         \\
-//     ;
-//     try std.testing.expectEqual(33, solve(input));
-// }
-
-test "demo 1" {
-    const input =
-        \\[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
-        \\
-    ;
-    try std.testing.expectEqual(10, solve(input));
-}
-
-// test "demo 2" {
-//     const input =
-//         \\[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
-//         \\
-//     ;
-//     try std.testing.expectEqual(12, solve(input));
-// }
-//
-// test "demo 3" {
-//     const input =
-//         \\[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
-//         \\
-//     ;
-//     try std.testing.expectEqual(11, solve(input));
-// }
-
-// test "real" {
-//     var buf: [2 << 16]u8 = undefined;
-//     const input = try std.fs.cwd().readFile("./data/day10.txt", &buf);
-//     try std.testing.expectEqual(488, solve(input));
-// }
