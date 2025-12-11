@@ -6,15 +6,15 @@ pub fn solve(input: []const u8) !usize {
     var devices: std.array_list.Managed([]const u8) = .init(alloc);
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     try devices.append("out");
-    var svr_idx: ?usize = null;
-    var dac_idx: ?usize = null;
-    var fft_idx: ?usize = null;
+    var svr: ?usize = null;
+    var dac: ?usize = null;
+    var fft: ?usize = null;
     while (it.next()) |line| {
         var t_it = std.mem.splitSequence(u8, line, ": ");
         const token_device = t_it.next().?;
-        if (std.mem.eql(u8, token_device, "svr")) svr_idx = devices.items.len;
-        if (std.mem.eql(u8, token_device, "dac")) dac_idx = devices.items.len;
-        if (std.mem.eql(u8, token_device, "fft")) fft_idx = devices.items.len;
+        if (std.mem.eql(u8, token_device, "svr")) svr = devices.items.len;
+        if (std.mem.eql(u8, token_device, "dac")) dac = devices.items.len;
+        if (std.mem.eql(u8, token_device, "fft")) fft = devices.items.len;
         try devices.append(token_device);
     }
 
@@ -41,19 +41,52 @@ pub fn solve(input: []const u8) !usize {
         }
         try connections.append(cs.items);
     }
-    std.debug.assert(svr_idx != null);
-    std.debug.assert(dac_idx != null);
-    std.debug.assert(fft_idx != null);
-    const a = traverse(connections.items, svr_idx.?, dac_idx.?) * traverse(connections.items, dac_idx.?, fft_idx.?) * traverse(connections.items, fft_idx.?, 0);
-    const b = traverse(connections.items, svr_idx.?, fft_idx.?) * traverse(connections.items, fft_idx.?, dac_idx.?) * traverse(connections.items, dac_idx.?, 0);
+    std.debug.assert(svr != null);
+    std.debug.assert(dac != null);
+    std.debug.assert(fft != null);
+    var a = traverse(connections.items, svr.?, dac.?, fft.?);
+    if (a > 0) {
+        a *= traverse(connections.items, dac.?, fft.?, null);
+        if (a > 0) {
+            a *= traverse(connections.items, fft.?, 0, null);
+        }
+    }
+    var b = traverse(connections.items, svr.?, fft.?, dac.?);
+    if (b > 0) {
+        b *= traverse(connections.items, fft.?, dac.?, null);
+        if (b > 0) {
+            b *= traverse(connections.items, dac.?, 0, null);
+        }
+    }
     return a + b;
+    // return traverse(connections.items, svr.?, fft.?, null);
 }
 
-fn traverse(connections: []const []const usize, at: usize, target: usize) usize {
+fn traverse(connections: []const []const usize, from: usize, target: usize, blacklist: ?usize) usize {
+    var memo: std.AutoHashMap(usize, usize) = .init(alloc);
+    defer memo.deinit();
+    return traverseMemo(&memo, connections, from, target, blacklist, from);
+}
+
+fn traverseMemo(
+    memo: *std.AutoHashMap(usize, usize),
+    connections: []const []const usize,
+    from: usize,
+    target: usize,
+    blacklist: ?usize,
+    at: usize,
+) usize {
+    if (at == blacklist) return 0;
     if (at == target) return 1;
     var acc: usize = 0;
     for (connections[at]) |to| {
-        acc += traverse(connections, to, target);
+        const a = b: {
+            if (memo.get(to)) |m| break :b m;
+            const r = traverseMemo(memo, connections, from, target, blacklist, to);
+            memo.put(at, r) catch unreachable;
+            break :b r;
+        };
+        acc += a;
     }
     return acc;
 }
