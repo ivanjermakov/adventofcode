@@ -1,4 +1,6 @@
 const std = @import("std");
+const day11a = @import("day11a.zig");
+const traverse = day11a.traverse;
 
 const alloc = std.heap.page_allocator;
 
@@ -44,48 +46,9 @@ pub fn solve(input: []const u8) !usize {
     std.debug.assert(svr != null);
     std.debug.assert(dac != null);
     std.debug.assert(fft != null);
-    var a = traverse(connections.items, svr.?, dac.?);
-    if (a > 0) {
-        a *= traverse(connections.items, dac.?, fft.?);
-        if (a > 0) {
-            a *= traverse(connections.items, fft.?, 0);
-        }
-    }
-    var b = traverse(connections.items, svr.?, fft.?);
-    if (b > 0) {
-        b *= traverse(connections.items, fft.?, dac.?);
-        if (b > 0) {
-            b *= traverse(connections.items, dac.?, 0);
-        }
-    }
+    const a = traverse(connections.items, svr.?, dac.?) * traverse(connections.items, dac.?, fft.?) * traverse(connections.items, fft.?, 0);
+    const b = traverse(connections.items, svr.?, fft.?) * traverse(connections.items, fft.?, dac.?) * traverse(connections.items, dac.?, 0);
     return a + b;
-    // return traverse(connections.items, svr.?, fft.?, null);
-}
-
-fn traverse(connections: []const []const usize, from: usize, target: usize) usize {
-    var memo: std.AutoHashMap(usize, usize) = .init(alloc);
-    defer memo.deinit();
-    return traverseMemo(&memo, connections, from, target, from);
-}
-
-fn traverseMemo(
-    memo: *std.AutoHashMap(usize, usize),
-    connections: []const []const usize,
-    from: usize,
-    target: usize,
-    at: usize,
-) usize {
-    if (at == target) return 1;
-    var acc: usize = 0;
-    for (connections[at]) |to| {
-        const a = b: {
-            if (memo.get(to)) |m| break :b m;
-            break :b traverseMemo(memo, connections, from, target, to);
-        };
-        acc += a;
-    }
-    memo.put(at, acc) catch unreachable;
-    return acc;
 }
 
 test "demo" {
@@ -111,5 +74,5 @@ test "demo" {
 test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day11.txt", &buf);
-    try std.testing.expectEqual(0, solve(input));
+    try std.testing.expectEqual(525518050323600, solve(input));
 }

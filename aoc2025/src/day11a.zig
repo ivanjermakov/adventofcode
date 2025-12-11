@@ -36,15 +36,28 @@ pub fn solve(input: []const u8) !usize {
         }
         try connections.append(cs.items);
     }
-    return traverse(connections.items, you_idx);
+    return traverse(connections.items, you_idx, 0);
 }
 
-fn traverse(connections: []const []const usize, at: usize) usize {
-    if (at == 0) return 1;
+pub fn traverse(connections: []const []const usize, from: usize, target: usize) usize {
+    var memo: std.AutoHashMap(usize, usize) = .init(alloc);
+    defer memo.deinit();
+    return traverseMemo(&memo, connections, from, target, from);
+}
+
+fn traverseMemo(
+    memo: *std.AutoHashMap(usize, usize),
+    connections: []const []const usize,
+    from: usize,
+    target: usize,
+    at: usize,
+) usize {
+    if (at == target) return 1;
     var acc: usize = 0;
     for (connections[at]) |to| {
-        acc += traverse(connections, to);
+        acc += memo.get(to) orelse traverseMemo(memo, connections, from, target, to);
     }
+    memo.put(at, acc) catch unreachable;
     return acc;
 }
 
