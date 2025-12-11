@@ -6,17 +6,22 @@ pub fn solve(input: []const u8) !usize {
     var devices: std.array_list.Managed([]const u8) = .init(alloc);
     var it = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     try devices.append("out");
-    var you_idx: usize = undefined;
+    var svr_idx: ?usize = null;
+    var dac_idx: ?usize = null;
+    var fft_idx: ?usize = null;
     while (it.next()) |line| {
         var t_it = std.mem.splitSequence(u8, line, ": ");
         const token_device = t_it.next().?;
-        if (std.mem.eql(u8, token_device, "you")) you_idx = devices.items.len;
+        if (std.mem.eql(u8, token_device, "svr")) svr_idx = devices.items.len;
+        if (std.mem.eql(u8, token_device, "dac")) dac_idx = devices.items.len;
+        if (std.mem.eql(u8, token_device, "fft")) fft_idx = devices.items.len;
         try devices.append(token_device);
     }
 
     var connections: std.array_list.Managed([]const usize) = .init(alloc);
     // slot for "out"
     try connections.append(&.{});
+
     var it2 = std.mem.splitScalar(u8, input[0 .. input.len - 1], '\n');
     while (it2.next()) |line| {
         var t_it = std.mem.splitSequence(u8, line, ": ");
@@ -36,37 +41,45 @@ pub fn solve(input: []const u8) !usize {
         }
         try connections.append(cs.items);
     }
-    return traverse(connections.items, you_idx);
+    std.debug.assert(svr_idx != null);
+    std.debug.assert(dac_idx != null);
+    std.debug.assert(fft_idx != null);
+    const a = traverse(connections.items, svr_idx.?, dac_idx.?) * traverse(connections.items, dac_idx.?, fft_idx.?) * traverse(connections.items, fft_idx.?, 0);
+    const b = traverse(connections.items, svr_idx.?, fft_idx.?) * traverse(connections.items, fft_idx.?, dac_idx.?) * traverse(connections.items, dac_idx.?, 0);
+    return a + b;
 }
 
-fn traverse(connections: []const []const usize, at: usize) usize {
-    if (at == 0) return 1;
+fn traverse(connections: []const []const usize, at: usize, target: usize) usize {
+    if (at == target) return 1;
     var acc: usize = 0;
     for (connections[at]) |to| {
-        acc += traverse(connections, to);
+        acc += traverse(connections, to, target);
     }
     return acc;
 }
 
 test "demo" {
     const input =
-        \\aaa: you hhh
-        \\you: bbb ccc
-        \\bbb: ddd eee
-        \\ccc: ddd eee fff
-        \\ddd: ggg
-        \\eee: out
-        \\fff: out
+        \\svr: aaa bbb
+        \\aaa: fft
+        \\fft: ccc
+        \\bbb: tty
+        \\tty: ccc
+        \\ccc: ddd eee
+        \\ddd: hub
+        \\hub: fff
+        \\eee: dac
+        \\dac: fff
+        \\fff: ggg hhh
         \\ggg: out
-        \\hhh: ccc fff iii
-        \\iii: out
+        \\hhh: out
         \\
     ;
-    try std.testing.expectEqual(5, solve(input));
+    try std.testing.expectEqual(2, solve(input));
 }
 
 test "real" {
     var buf: [2 << 16]u8 = undefined;
     const input = try std.fs.cwd().readFile("./data/day11.txt", &buf);
-    try std.testing.expectEqual(413, solve(input));
+    try std.testing.expectEqual(0, solve(input));
 }
