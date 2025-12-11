@@ -44,28 +44,28 @@ pub fn solve(input: []const u8) !usize {
     std.debug.assert(svr != null);
     std.debug.assert(dac != null);
     std.debug.assert(fft != null);
-    var a = traverse(connections.items, svr.?, dac.?, fft.?);
+    var a = traverse(connections.items, svr.?, dac.?);
     if (a > 0) {
-        a *= traverse(connections.items, dac.?, fft.?, null);
+        a *= traverse(connections.items, dac.?, fft.?);
         if (a > 0) {
-            a *= traverse(connections.items, fft.?, 0, null);
+            a *= traverse(connections.items, fft.?, 0);
         }
     }
-    var b = traverse(connections.items, svr.?, fft.?, dac.?);
+    var b = traverse(connections.items, svr.?, fft.?);
     if (b > 0) {
-        b *= traverse(connections.items, fft.?, dac.?, null);
+        b *= traverse(connections.items, fft.?, dac.?);
         if (b > 0) {
-            b *= traverse(connections.items, dac.?, 0, null);
+            b *= traverse(connections.items, dac.?, 0);
         }
     }
     return a + b;
     // return traverse(connections.items, svr.?, fft.?, null);
 }
 
-fn traverse(connections: []const []const usize, from: usize, target: usize, blacklist: ?usize) usize {
+fn traverse(connections: []const []const usize, from: usize, target: usize) usize {
     var memo: std.AutoHashMap(usize, usize) = .init(alloc);
     defer memo.deinit();
-    return traverseMemo(&memo, connections, from, target, blacklist, from);
+    return traverseMemo(&memo, connections, from, target, from);
 }
 
 fn traverseMemo(
@@ -73,21 +73,18 @@ fn traverseMemo(
     connections: []const []const usize,
     from: usize,
     target: usize,
-    blacklist: ?usize,
     at: usize,
 ) usize {
-    if (at == blacklist) return 0;
     if (at == target) return 1;
     var acc: usize = 0;
     for (connections[at]) |to| {
         const a = b: {
             if (memo.get(to)) |m| break :b m;
-            const r = traverseMemo(memo, connections, from, target, blacklist, to);
-            memo.put(at, r) catch unreachable;
-            break :b r;
+            break :b traverseMemo(memo, connections, from, target, to);
         };
         acc += a;
     }
+    memo.put(at, acc) catch unreachable;
     return acc;
 }
 
