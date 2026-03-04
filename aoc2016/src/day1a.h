@@ -16,8 +16,6 @@ int64_t day1a_solve(char input[], size_t size) {
         char* end;
         int32_t n = strtol(&input[i], &end, 10);
         size_t l = end - &input[i];
-        printf("l: %d\n", n);
-        printf("d: %d\n", dir);
         switch (dir) {
             case 0: vert += n; break;
             case 1: horiz += n; break;
@@ -27,5 +25,5 @@ int64_t day1a_solve(char input[], size_t size) {
         i += l;
         i += 2;
     }
-    return abs(vert) + abs(horiz);
+    return labs(vert) + labs(horiz);
 }
