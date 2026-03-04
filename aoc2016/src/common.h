@@ -8,6 +8,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "sys/param.h"
+#include <inttypes.h>
 
 typedef struct {
     int32_t x;

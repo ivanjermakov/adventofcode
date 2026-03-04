@@ -9,15 +9,13 @@ uint8_t lut[] = {7, 8, 9, 4, 5, 6, 1, 2, 3};
 int64_t day2a_solve(char input[], size_t size) {
     Vec2 pos = {.x = 1, .y = 1};
     int64_t res;
-    // 0 north, 1 east, 2 south, 3 west
-    int8_t dir = 0;
     size_t i = 0;
     while (i < size) {
         char c = input[i];
         switch (c) {
             case '\n': {
                 res *= 10;
-                res += lut[3 * (pos.y) + pos.x];
+                res += lut[3 * pos.y + pos.x];
                 goto c;
             }
             case 'U': pos.y += 1; break;
@@ -33,6 +31,6 @@ int64_t day2a_solve(char input[], size_t size) {
     }
 
     res *= 10;
-    res += lut[3 * (pos.y) + pos.x];
+    res += lut[3 * pos.y + pos.x];
     return res;
 }
